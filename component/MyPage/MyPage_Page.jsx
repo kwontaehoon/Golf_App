@@ -3,7 +3,9 @@ import {View, Text, StyleProp} from 'react-native'
 
 const MyPage_Page = () => {
   return (
-    <View></View>
+    <View style={{marginTop: 50}}>
+      <Text>ggggggggggggggggggggg</Text>
+    </View>
   )
 }
 

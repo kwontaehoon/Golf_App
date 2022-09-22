@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity} from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Scrollview } from 'react-native'
 import { getFirestore, collection, getDocs, docSnap, setDoc, doc, getDoc } from 'firebase/firestore';
 import firebaseConfig from '../../firebase'
 import moment from "moment"
@@ -49,7 +49,7 @@ const a = StyleSheet.create({
 })
 const Board = ({navigation, route}) => {
 
-    const array = [1, 2];
+    console.log('route: ', route.params);
 
     const app = firebaseConfig;
     const db = getFirestore(app);
@@ -63,6 +63,18 @@ const Board = ({navigation, route}) => {
 
     const board_insert = async() => {
 
+    //     if(route.params !== undefined){
+    //         console.log(route.params[0]);
+    //         console.log(route.params[1]);
+    //     await setDoc(doc(db, "board", String(info.length+1)), {
+    //         id: "plumber",
+    //         title: route.params[0],
+    //         content: route.params[1],
+    //         date: moment().format("YYYY.MM.DD HH:mm"),
+    //         writer: "태훈",
+    //     });
+    // }
+
         let arr = [];
         const querySnapshot = await getDocs(collection(db, "board"));
         querySnapshot.forEach((doc) => {
@@ -70,26 +82,13 @@ const Board = ({navigation, route}) => {
         arr.push(doc.data());
         });
         console.log('arr: ', arr);
-        console.log('board 총길이: ', arr.length);
+        console.log('board 총길이: ', arr.length); 
         setInfo(arr);
-
-        if(route.params !== undefined){
-            console.log(route.params[0]);
-            console.log(route.params[1]);
-        await setDoc(doc(db, "board", String(arr.length+1)), {
-            id: "plumber",
-            title: route.params[0],
-            content: route.params[1],
-            date: moment().format("YYYY.MM.DD HH:mm"),
-            writer: "태훈",
-        });
-    }
     }
    
     const List1 = () => {
         let arr = [];
         info.map((x, index) =>{
-            console.log('x: ', x);
             arr.push(
             <View style={a.subbox} key={index}>
                 <Text>{x.title}</Text>

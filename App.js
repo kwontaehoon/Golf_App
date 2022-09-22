@@ -64,7 +64,7 @@ const App = () => {
         {()=>(
                <Stack.Navigator >
                     <Stack.Screen 
-                        name="마이페이지"
+                        name="로그인"
                         component={MyPageMain}
                       />
                </Stack.Navigator>   

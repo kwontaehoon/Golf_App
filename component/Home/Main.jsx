@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Icon5 from 'react-native-vector-icons/FontAwesome5'
 
@@ -8,6 +8,15 @@ const a = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'black',
         marginTop: 30,
+    },
+    item: {
+        width: 200,
+        borderWidth: 1,
+        borderColor: 'black',
+        marginRight: 10,
+      },
+    title: {
+        fontSize: 32,
     },
     header:{
         borderWidth: 1,
@@ -25,14 +34,13 @@ const a = StyleSheet.create({
         alignItems: 'flex-end'
     },
     box1:{
-        borderWidth: 1,
-        borderColor: 'black',
-        height: '15%',
-        justifyContent: 'center',
+        height: '20%',
+        justifyContent: 'space-around',
         alignItems: 'center',
+        padding: 10,
     },
     box2:{
-        height: 200,
+        height: 190,
         flexDirection: 'row',
         justifyContent: 'center',
         borderRadius: 10,
@@ -58,29 +66,58 @@ const a = StyleSheet.create({
         fontWeight: 'bold',
       },
     box4:{
-        height: '18%',
+        height: '15%',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'ivory'
     }
 })
 const Main = ({navigation}) => {
+
+    const DATA = [
+        {
+          id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+          title: "First Item",
+        },
+        {
+          id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
+          title: "Second Item",
+        },
+        {
+          id: "58694a0f-3da1-471f-bd96-145571e29d72",
+          title: "Third Item",
+        },
+      ];
+
+      const renderItem = ({ item }) => (
+        <Item title={item.title} />
+      );
+
+      const Item = ({ title }) => (
+        <View style={a.item}>
+          <Text style={a.title}>{title}</Text>
+        </View>
+      );
+    
+
   return (
     <View style={a.container}>
         <View style={a.header}>
-            <View style={a.head1}>
+            <TouchableOpacity style={a.head1} onPress={()=>navigation('로그인')}>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>로그인을 해주세요.</Text>
-            </View>
+            </TouchableOpacity>
             <View style={a.head2}>
-                <Text>알림</Text>
+                <Icon name ='bell' size={20}></Icon>
             </View>
         </View>
         <View style={a.box1}>
-            <Text>최신 부킹 정보</Text>
+            <FlatList data={DATA} renderItem={renderItem}
+            keyExtractor={(item)=>item.id}
+            horizontal={true} >최신 부킹 정보</FlatList>
         </View>
 
         <View style={a.box2}>
-            <TouchableOpacity style={a.subbox2} onPress={()=>navigation.navigate('예약')}>
+            <TouchableOpacity style={a.subbox2} onPress={()=>navigation.navigate('실시간 예약')}>
                 <Image source={require('../../assets/images/check.png')} style={a.image} resizeMode='stretch'></Image>
                 <Text style={a.text}>실시간 예약</Text>
             </TouchableOpacity>

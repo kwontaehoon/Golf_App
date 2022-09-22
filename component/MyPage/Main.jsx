@@ -1,11 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, TextInput, Switch } from 'react-native'
 
-import firebaseConfig from '../../firebase'
-import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
-
-
 const a = StyleSheet.create({
     container:{
     },
@@ -49,21 +44,6 @@ const a = StyleSheet.create({
 
 const Main = () => {
 
-    WebBrowser.maybeCompleteAuthSession();
-
-    const [request, response, promptAsync] = Google.useAuthRequest({
-        expoClientId: '1021420778799-s11n1o516sp06sofj28bjvi0995oq9bu.apps.googleusercontent.com',
-        webClientId: '1021420778799-frvo0oktv62bdugt6anf19536sa5c8sh.apps.googleusercontent.com',
-      });
-      console.log('response: ', response);
-
-    // useEffect(() => {
-    //     console.log(response?.type);
-    //     if (response?.type === 'success') {
-    //         const { authentication } = response;
-    //         console.log('authentication: ', authentication);
-    //     }
-    // }, [response]);
  
     const [email, setEmail] = useState([]);
     const [pass, setPass] = useState([]);

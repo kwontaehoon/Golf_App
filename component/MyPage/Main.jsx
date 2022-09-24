@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, TextInput, Switch } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, TextInput, Switch, Button } from 'react-native'
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider } from "firebase/auth";
 
 const a = StyleSheet.create({
     container:{
@@ -42,15 +43,58 @@ const a = StyleSheet.create({
     }
 })
 
-const Main = () => {
+const Main = ({navigation}) => {
 
  
-    const [email, setEmail] = useState([]);
-    const [pass, setPass] = useState([]);
+    const [email, setEmail] = useState();
+    console.log('email: ', email);
+    const [password, setPassword] = useState();
+    console.log('password: ', password);
 
     const [isEnabled, setIsEnabled] = useState(false); // 자동로그인 스위치
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
+
+
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    const provider2 = new FacebookAuthProvider();
+
+    const login = async() => {
+        console.log('aaa');
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+        const user = userCredential.user;
+        navigation.push('마이페이지');
+        })
+        .catch((error) => {
+            console.log('error');
+            const errorCode = error.code;
+            const errorMessage = error.message;
+        });
+    }
+    const google_login = async() => {
+        signInWithPopup(auth, provider2)
+            .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            // The signed-in user info.
+            const user = result.user;
+            // ...
+          })
+          .catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.customData.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            // ...
+          }
+          );
+        }
 
   return (
     <View style={a.container}>
@@ -59,8 +103,8 @@ const Main = () => {
     </View>
     <View style={a.main}>
         <SafeAreaView>
-            <TextInput style={a.input} placeholder='아이디'/>
-            <TextInput style={a.input} secureTextEntry={true} placeholder='비밀번호'/>
+            <TextInput style={a.input} placeholder='이메일' onChangeText={setEmail}/>
+            <TextInput style={a.input} secureTextEntry={true} placeholder='비밀번호' onChangeText={setPassword}/>
         </SafeAreaView>
     <View style={a.auto}>
        <Text>자동 로그인</Text>
@@ -68,11 +112,11 @@ const Main = () => {
         thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"} ios_backgroundColor="#3e3e3e"
         onValueChange={toggleSwitch} value={isEnabled} />
     </View>
-    <TouchableOpacity style={[a.bar, {backgroundColor: '#ddd'}]}>
+    <TouchableOpacity style={[a.bar, {backgroundColor: '#ddd'}]} onPress={login}>
         <Text style={a.text}>로그인</Text>
     </TouchableOpacity>
 
-    <TouchableOpacity style={[a.bar, {backgroundColor: 'white'}]}>
+    <TouchableOpacity style={[a.bar, {backgroundColor: 'white'}]} onPress={google_login}>
         <Text style={a.text}>google 로그인</Text>
     </TouchableOpacity>
 
@@ -80,7 +124,7 @@ const Main = () => {
         <Text style={[a.text, {color: 'white'}]}>FaceBook 로그인</Text>
     </TouchableOpacity>
     
-    <TouchableOpacity style={a.bar}>
+    <TouchableOpacity style={a.bar} onPress={()=>navigation.push('회원가입')}>
         <Text style={a.text}>회원가입</Text>
     </TouchableOpacity>
     </View>

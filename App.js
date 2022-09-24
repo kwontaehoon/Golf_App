@@ -14,6 +14,8 @@ import Board from './component/Home/Board'
 import Search from './component/Search/Search_Page'
 import MyPage from './component/MyPage/MyPage_Page'
 import MyPageMain from './component/MyPage/Main'
+import SignUp from './component/MyPage/SignUp'
+import LoginOk from './component/MyPage/LoginOk'
 
 LogBox.ignoreAllLogs();
 
@@ -66,6 +68,14 @@ const App = () => {
                     <Stack.Screen 
                         name="로그인"
                         component={MyPageMain}
+                      />
+                      <Stack.Screen 
+                        name="회원가입"
+                        component={SignUp}
+                      />
+                      <Stack.Screen 
+                        name="마이페이지"
+                        component={LoginOk}
                       />
                </Stack.Navigator>   
           )}

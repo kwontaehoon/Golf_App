@@ -4,6 +4,10 @@ import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { getDate, addDays, format } from 'date-fns'
 import Reservation2 from './Reservation2'
+import Reservation_add from './Reservation_add'
+import * as SQLite from "expo-sqlite"
+import firebaseConfig from '../../firebase'
+import { getFirestore, collection, getDocs, docSnap, setDoc, doc, getDoc } from 'firebase/firestore'
 
 const a = StyleSheet.create({
   container:{
@@ -67,6 +71,7 @@ const a = StyleSheet.create({
     fontWeight: 'bold',
   },
   dropdown1RowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
+
   add:{
     height: 50,
     justifyContent: 'center',
@@ -102,14 +107,40 @@ const a = StyleSheet.create({
     top: '10%',
     left: '15%',
     zIndex: 100,
+  },
+  add2:{
+    width: 50,
+    height: 50,
+    backgroundColor: 'pink',
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 100,
   }
 })
 
 const Reservation = () => {
 
+  const menu = ["서울", "경기", "인천", "경북", "경남", "충북", "충남", "제주도"];
+  const menu2 = ["20대", "30대", "40대", "50대", "무관"];
+  const menu3 = ["남", "여", "무관"];
+
+  const app = firebaseConfig;
+  const db = getFirestore(app);
+  const sqlitedb = SQLite.openDatabase('golf.db');
+
+  console.log('sqlite: ', sqlitedb);
+
+  const [reservation_info, setReservation_info] = useState([]); // firebase 방 정보
+  const [info, setInfo] = useState([]); // sqlite 정보
+  console.log('info: ', info);
   const [week, setWeek] = useState([]); // 날짜
   const [date, setDate] = useState(Array.from({length: 14}, () => { return false })); // 선택 날짜
   const [scroll, setScroll] = useState(false); // 예약 상세정보 display
+  const [scroll2, setScroll2] = useState(false); // 방만들기 display
   const [add_display, setAdd_display] = useState(false); // 더보기 display
 
   const arr = [
@@ -117,7 +148,7 @@ const Reservation = () => {
     coursename: '레익스빌골프클럽',  //골프장 이름
     coursearea: '강원도 속초시',  //위치
     coursemoney: '200,000원',  //참가가격
-    dday : '202-12-12 10:00',   //일시 
+    dday : '2020-12-12',   //일시 
     gender: '무관',   //성별조건
     age: '무관',       //연령조건
     average: 100,  //에버리지조건
@@ -126,27 +157,8 @@ const Reservation = () => {
     rcount: 3,       //모집된 인원
     grpname: 'asd, bsb, ddd',  //참가원 별명
     grpemail: 'sdf@asdf.com, asd@ad.com,text@dd.com'  //참가원 이메일
-  },
-  {
-    coursename: '레익스빌골프클럽',  //골프장 이름
-    coursearea: '강원도 속초시',  //위치
-    coursemoney: '200,000원',  //참가가격
-    dday : '202-12-12 10:00',   //일시 
-    gender: '무관',   //성별조건
-    age: '무관',       //연령조건
-    average: 100,  //에버리지조건
-    rec: 8,          //모집 인원
-    admin: 'test',  //개설자
-    rcount: 3,       //모집된 인원
-    grpname: 'asd, bsb, ddd',  //참가원 별명
-    grpemail: 'sdf@asdf.com, asd@ad.com,text@d.com'  //참가원 이메일
-  },
-];
-
-
-const menu = ["서울", "경기", "인천", "경북", "경남", "충북", "충남", "제주도"];
-const menu2 = ["20대", "30대", "40대", "50대", "무관"];
-const menu3 = ["남", "여", "무관"];
+  }
+]
 
 const Item = ({ formatted, day, id }) => (
   <TouchableOpacity style={a.item} key={id} onPress={()=>date_click(id)}>
@@ -168,11 +180,11 @@ const weekend = (formatted, day, id) => {
 
 const Item2 = ({ item }) => (
   <TouchableOpacity style={a.item2} key={item.grpemail} onPress={()=>setScroll(!scroll)}>
-    <View style={a.content2}><Text>{item.coursearea}</Text></View>
-    <View style={a.content2}><Text>{item.coursename}</Text></View>
+    <View style={a.content2}><Text>{item.location}</Text></View>
+    <View style={a.content2}><Text>{item.title}</Text></View>
     <View style={a.content2}><Text>{item.dday}</Text></View>
     <View style={a.content2}>
-      <Text>{item.coursemoney}</Text>
+      <Text>{item.price}</Text>
       <View style={{alignItems: 'flex-end', width: '100%', marginRight: 30, marginTop: 10,}}><Text> 3 / 5</Text></View>
     </View>
   </TouchableOpacity>
@@ -185,6 +197,12 @@ const renderItem = ({ item }) => (
 const renderItem2 = ({ item }) => (
     <Item2 item={item} />
 );
+
+useEffect(() => {
+  sqlitedb.transaction((tx) => {
+    tx.executeSql('select * from golfcourse', [], (_, { rows: { _array } }) => {
+      setInfo(_array)});});
+}, []);
 
 useEffect(()=>{
   const date = new Date();
@@ -200,10 +218,24 @@ useEffect(()=>{
   setWeek(arr);
 }, []);
 
+useEffect(()=>{
+  read();
+}, []);
+
 const date_click = (e) => {
   let arr = Array.from({length: 14}, () => { return false });
   arr[e] = !arr[e];
   setDate(arr);
+}
+
+const read = async() => {
+
+  const querySnapshot = await getDocs(collection(db, "reservation"));
+  let arr = [];
+  querySnapshot.forEach((doc) => {
+      arr.push(doc.data());
+  });
+  setReservation_info(arr);
 }
 
   return (
@@ -307,8 +339,12 @@ const date_click = (e) => {
         <View style={a.subtitle}><Text>가격 및 인원</Text></View>
       </View>
       <SafeAreaView style={{height: '71%'}}>
+        <TouchableOpacity style={a.add2} onPress={()=>setScroll2(!scroll2)}>
+          <Icon name='plus' size={18} />
+        </TouchableOpacity>
         <Reservation2 scroll={scroll} setScroll={setScroll}/>
-        <FlatList data={arr} renderItem={renderItem2} keyExtractor={item => item.id}></FlatList>
+        <Reservation_add scroll2={scroll2} setScroll2={setScroll2}/>
+        <FlatList data={reservation_info} renderItem={renderItem2} keyExtractor={item => item.id}></FlatList>
       </SafeAreaView>
     </View>
   )

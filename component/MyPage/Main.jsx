@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, TextInput, Switch, Button } from 'react-native'
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider } from "firebase/auth";
+import {authentication} from '../../firebase'
 
 const a = StyleSheet.create({
     container:{
@@ -62,28 +63,30 @@ const Main = ({navigation}) => {
 
     const login = async() => {
         console.log('aaa');
-        signInWithEmailAndPassword(auth, email, password)
+        await signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
         const user = userCredential.user;
+        console.log(user);
         navigation.push('마이페이지');
         })
         .catch((error) => {
             console.log('error');
+            alert('아이디와 비밀번호를 확인해주세요.');
             const errorCode = error.code;
             const errorMessage = error.message;
         });
     }
-    const google_login = async() => {
-        signInWithPopup(auth, provider2)
-            .then((result) => {
+    const google_login = () => {
+        console.log('google_login');
+        signInWithPopup(authentication, provider)
+        .then((result) => {
             // This gives you a Google Access Token. You can use it to access the Google API.
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const token = credential.accessToken;
             // The signed-in user info.
             const user = result.user;
             // ...
-          })
-          .catch((error) => {
+        }).catch((error) => {
             // Handle Errors here.
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -92,8 +95,7 @@ const Main = ({navigation}) => {
             // The AuthCredential type that was used.
             const credential = GoogleAuthProvider.credentialFromError(error);
             // ...
-          }
-          );
+  });
         }
 
   return (

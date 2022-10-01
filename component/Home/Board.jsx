@@ -63,17 +63,17 @@ const Board = ({navigation, route}) => {
 
     const board_insert = async() => {
 
-    //     if(route.params !== undefined){
-    //         console.log(route.params[0]);
-    //         console.log(route.params[1]);
-    //     await setDoc(doc(db, "board", String(info.length+1)), {
-    //         id: "plumber",
-    //         title: route.params[0],
-    //         content: route.params[1],
-    //         date: moment().format("YYYY.MM.DD HH:mm"),
-    //         writer: "태훈",
-    //     });
-    // }
+        if(route.params !== undefined){
+            console.log(route.params[0]);
+            console.log(route.params[1]);
+        await setDoc(doc(db, "board", String(info.length+1)), {
+            id: "plumber",
+            title: route.params[0],
+            content: route.params[1],
+            date: moment().format("YYYY.MM.DD HH:mm"),
+            writer: "희원",
+        });
+    }
 
         let arr = [];
         const querySnapshot = await getDocs(collection(db, "board"));
@@ -88,7 +88,7 @@ const Board = ({navigation, route}) => {
    
     const List1 = () => {
         let arr = [];
-        info.map((x, index) =>{
+        info.reverse().map((x, index) =>{
             arr.push(
             <View style={a.subbox} key={index}>
                 <Text>{x.title}</Text>

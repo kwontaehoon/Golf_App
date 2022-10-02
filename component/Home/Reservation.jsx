@@ -200,7 +200,7 @@ const renderItem2 = ({ item }) => (
 
 useEffect(() => {
   sqlitedb.transaction((tx) => {
-    tx.executeSql('select * from golfcourse', [], (_, { rows: { _array } }) => {
+    tx.executeSql('select * from test', [], (_, { rows: { _array } }) => {
       setInfo(_array)});});
 }, []);
 
@@ -242,7 +242,7 @@ const read = async() => {
     <View style={a.container}>
       <View style={a.header}>
         <FlatList data={week} renderItem={renderItem}
-          keyExtractor={item => item.id} horizontal={true}>
+          keyExtractor={(item, index) => index.toString()} horizontal={true}>
         </FlatList>
       </View>
       <View style={a.box1}>

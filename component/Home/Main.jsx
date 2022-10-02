@@ -11,8 +11,6 @@ const a = StyleSheet.create({
     },
     item: {
         width: 200,
-        borderWidth: 1,
-        borderColor: 'black',
         marginRight: 10,
       },
     title: {
@@ -61,7 +59,7 @@ const a = StyleSheet.create({
         height: '60%',
         marginBottom: 20,
       },
-      text:{
+    text:{
         fontSize: 20,
         fontWeight: 'bold',
       },
@@ -78,32 +76,30 @@ const Main = ({navigation}) => {
         {
           id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
           title: "First Item",
+          src: require('../../assets/images/course01.jpg'),
         },
         {
           id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
           title: "Second Item",
+          src: require('../../assets/images/course02.jpg'),
         },
         {
           id: "58694a0f-3da1-471f-bd96-145571e29d72",
           title: "Third Item",
+          src: require('../../assets/images/course03.jpg'),
         },
       ];
 
       const renderItem = ({ item }) => (
-        <Item title={item.title} />
-      );
-
-      const Item = ({ title }) => (
         <View style={a.item}>
-          <Text style={a.title}>{title}</Text>
+          <Image source={item.src} style={{width: '100%', height: '100%'}} resizeMode='stretch'></Image>
         </View>
       );
-    
 
   return (
     <View style={a.container}>
         <View style={a.header}>
-            <TouchableOpacity style={a.head1} onPress={()=>navigation('로그인')}>
+            <TouchableOpacity style={a.head1} onPress={()=>navigation.navigate('로그인')}>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>로그인을 해주세요.</Text>
             </TouchableOpacity>
             <View style={a.head2}>
@@ -112,8 +108,8 @@ const Main = ({navigation}) => {
         </View>
         <View style={a.box1}>
             <FlatList data={DATA} renderItem={renderItem}
-            keyExtractor={(item)=>item.id}
-            horizontal={true} >최신 부킹 정보</FlatList>
+            keyExtractor={(item, index) => index.toString()}
+            horizontal={true} />
         </View>
 
         <View style={a.box2}>

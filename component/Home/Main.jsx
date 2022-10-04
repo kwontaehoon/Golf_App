@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import Icon5 from 'react-native-vector-icons/FontAwesome5'
 
 const a = StyleSheet.create({
     container:{

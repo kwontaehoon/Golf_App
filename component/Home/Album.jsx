@@ -57,9 +57,7 @@ const pathReference = ref(storage, 'images/3.png');
 const listRef = ref(storage, 'images/');
 
 const [address, setAddress] = useState([]);
-console.log('address: ', address);
 const [photos, setPhotos] = useState([]);
-console.log('photos: ', photos);
 
 useEffect(()=>{
 

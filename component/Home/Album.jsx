@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet, Image, FlatList } from 'react-native'
 import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage"
 import firebaseConfig from '../../firebase'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -34,6 +34,8 @@ const a = StyleSheet.create({
   main2:{
     flexWrap: 'wrap',
     alignContent: 'center',
+    borderWidth: 2,
+    borderColor: 'pink',
   },
   box:{
     width: '50%',
@@ -102,8 +104,8 @@ func2();
         <View style={a.header2}>
           <Icon name='navicon' size={20}></Icon>
         </View>
-        <View style={a.main2}>
-          <View style={a.box}>
+        <FlatList style={a.main2}>
+          {/* <View style={a.box}>
             <View style={a.imagebox}>
               <Image source={{uri: photos[0]}} style={{width: '100%', height: '100%', borderRadius: 10,}} /> 
             </View>
@@ -138,8 +140,8 @@ func2();
               <Text style={{fontSize: 12}}>images</Text>
               <Text style={{fontSize: 12}}>{address.length}</Text>
             </View>
-          </View>
-        </View>
+          </View> */}
+        </FlatList>
       </View>
     </View>
   )

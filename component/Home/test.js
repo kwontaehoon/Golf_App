@@ -1,7 +1,5 @@
-const arr = {};
-const arr2 = {[2022-09-15]:{selected: true}}
+const arr = [];
+const test = '1234';
 
+arr.push({id: test});
 console.log(arr);
-console.log(Object.keys(arr).length);
-console.log(Object.values(arr2));
-console.log(arr === undefined);

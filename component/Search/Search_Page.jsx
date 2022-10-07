@@ -68,14 +68,11 @@ const Search_Page = () => {
   ];
 
   const renderItem = ({ item }) => (
-    <Item title={item.title} />
-  );
-  
-  const Item = ({ title }) => (
     <View style={a.item}>
-      <Text style={a.title}>{title}</Text>
+      <Text style={a.title}>{item.title}</Text>
     </View>
   );
+  
   return (
     <SafeAreaView style={a.container}>
       <FlatList data={Data}

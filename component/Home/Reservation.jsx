@@ -200,8 +200,10 @@ const renderItem2 = ({ item }) => (
 
 useEffect(() => {
   sqlitedb.transaction((tx) => {
-    tx.executeSql('select * from test', [], (_, { rows: { _array } }) => {
-      setInfo(_array)});});
+    tx.executeSql("SELECT * FROM golfcourse", [], (tx, results)=>{
+     setInfo(results.rows._array);
+      }, error => {console.log('error');});
+     })
 }, []);
 
 useEffect(()=>{

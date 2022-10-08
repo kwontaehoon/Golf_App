@@ -60,30 +60,36 @@ const listRef = ref(storage, 'images/');
 
 const [address, setAddress] = useState([]);
 const [photos, setPhotos] = useState([]);
+console.log('photos: ', photos);
 
 useEffect(()=>{
+  console.log('useEffect');
 
 const func = async() => {
+  console.log('func');
   await listAll(listRef)
   .then((res) => {
     let arr = [];
     res.items.forEach((x) => {
       arr.push(x.fullPath);
+      console.log('arr: ', arr);
     });
     setAddress(arr);
-    
-  }).catch((error) => {
+  })
+  .catch((error) => {
     console.log(error);
   });
 }
 
 const func2 = async() => {
+  console.log('func2');
   let arr = [];
   address.map(x => {
     const starsRef = ref(storage, x);
     getDownloadURL(starsRef)
     .then((url) => {
-      arr.push(url);
+      arr.push({url});
+      console.log('arr2: ', arr);
       if(arr.length === address.length){
         setPhotos(arr);
       }
@@ -92,6 +98,12 @@ const func2 = async() => {
 func();
 func2();
 }, []);
+
+const renderItem = ({ item }) => (
+  <View style={a.item}>
+    <Text style={a.title}>{item.url}</Text>
+  </View>
+);
 
   return (
     <View style={a.container}>
@@ -104,7 +116,7 @@ func2();
         <View style={a.header2}>
           <Icon name='navicon' size={20}></Icon>
         </View>
-        <FlatList style={a.main2}>
+        <FlatList style={a.main2} data={photos} renderItem={renderItem}>
           {/* <View style={a.box}>
             <View style={a.imagebox}>
               <Image source={{uri: photos[0]}} style={{width: '100%', height: '100%', borderRadius: 10,}} /> 

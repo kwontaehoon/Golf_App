@@ -22,7 +22,6 @@ const a = StyleSheet.create({
 });
 const Search_Page = () => {
 
-  const [test, setTest] = useState([]);
   const db = SQLite.openDatabase('golf.db');
 
   useEffect(() => {
@@ -30,13 +29,20 @@ const Search_Page = () => {
       tx.executeSql("SELECT * FROM kwon", [], (tx, results)=>{
        console.log('정보: ', results.rows._array);
         }, error => {console.log('error: ', error);});
-       })
-    
-       for(let i =0; i<5; i++){
-        console.log('i: ', i);
-        console.log('test: ', test);
-        setTest(i);
+       });
+
+       const k = () => {
+        console.log('k');
        }
+
+       const t = () => {
+        console.log('t');
+       }
+
+       k();
+       t();
+       console.log('앙');
+    
   }, []);
 
   const Data = [

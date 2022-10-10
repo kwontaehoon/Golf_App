@@ -17,6 +17,7 @@ const a = StyleSheet.create({
     borderWidth: 3,
     borderColor: 'black',
     flex: 1,
+    alignItems: 'center',
   },
   right:{
     borderWidth: 1,
@@ -26,14 +27,17 @@ const a = StyleSheet.create({
   main:{
     
   },
-  box:{
+  image:{
     width: 70,
     height: 70,
     backgroundColor: '#f9c2ff',
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
-
+  },
+  title:{
+    borderWidth: 1,
+    borderColor: 'black',
   }
 })
 
@@ -96,7 +100,6 @@ const func = async() => {
     });
     setAddress(arr);
     func2(arr);
-    console.log('mmmmmmmmmmmmm');
   });
 }
 
@@ -104,19 +107,17 @@ const func2 = async(a) => {
   console.log('func2');
   let arr = [];
   let arr2 = [];
-  a.map(x => {
+  await a.map(x => {
     const starsRef = ref(storage, x);
     getDownloadURL(starsRef)
     .then((url) => {
       arr.push({url});
       if(arr.length === a.length){
-        arr2[index] = { id: index, url: arr };
-        console.log('arr2: ', arr2[index]);
+        arr2 = { id: index, url: arr };
         kwon.push(arr2);
-        console.log('kwon: ', kwon);
+        setPhotos(kwon);
       }
   })})
-  console.log('kwon최종: ', kwon);
 }
 func();
 
@@ -124,8 +125,9 @@ func();
 }, []);
 
 const renderItem = ({ item }) => (
-  <View style={a.box}>
-      <View></View>
+  <View>
+    <Image style={a.image} ></Image>
+    <View style={a.title}><Text>gg</Text></View>
   </View>
 );
 
@@ -133,7 +135,7 @@ const renderItem = ({ item }) => (
     <View style={a.container}>
       <View style={a.left}>
         <View style={a.main}>
-            <FlatList data={test} renderItem={renderItem}
+            <FlatList data={photos} renderItem={renderItem}
             horizontal={false} />
         </View>
       </View>

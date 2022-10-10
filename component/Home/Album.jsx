@@ -42,12 +42,13 @@ const Album = () => {
 const app = firebaseConfig;
 const storage = getStorage();
 const pathReference = ref(storage, 'images/3.png');
-const listRef = ref(storage, 'images/');
 
+const [title, setTitle] = useState(['', 'images/']);
 const [address, setAddress] = useState([]);
-// console.log('address: ', address);
+console.log('address: ', address);
 const [photos, setPhotos] = useState([]);
-// console.log('photos: ', photos);
+console.log('photos: ', photos);
+
 const test = [
   {
     id: 1,
@@ -80,6 +81,10 @@ const test = [
 
 useEffect(()=>{
   console.log('useEffect');
+let kwon = [];
+title.map((x, index) => {
+
+const listRef = ref(storage, x);
 
 const func = async() => {
   console.log('func');
@@ -91,26 +96,31 @@ const func = async() => {
     });
     setAddress(arr);
     func2(arr);
+    console.log('mmmmmmmmmmmmm');
   });
 }
 
-const func2 = (a) => {
+const func2 = async(a) => {
   console.log('func2');
   let arr = [];
+  let arr2 = [];
   a.map(x => {
     const starsRef = ref(storage, x);
     getDownloadURL(starsRef)
     .then((url) => {
       arr.push({url});
       if(arr.length === a.length){
-        setPhotos(arr);
+        arr2[index] = { id: index, url: arr };
+        console.log('arr2: ', arr2[index]);
+        kwon.push(arr2);
+        console.log('kwon: ', kwon);
       }
   })})
-  setTest(11);
+  console.log('kwon최종: ', kwon);
 }
 func();
 
-
+});
 }, []);
 
 const renderItem = ({ item }) => (

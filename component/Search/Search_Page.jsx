@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import {View, Text, StyleSheet, FlatList, SafeAreaView, StatusBar} from 'react-native'
 import * as SQLite from "expo-sqlite";
 import * as FileSystem  from 'expo-file-system'
@@ -22,6 +22,7 @@ const a = StyleSheet.create({
 });
 const Search_Page = () => {
 
+  const [test, setTest] = useState([]);
   const db = SQLite.openDatabase('golf.db');
 
   useEffect(() => {
@@ -31,9 +32,12 @@ const Search_Page = () => {
         }, error => {console.log('error: ', error);});
        })
     
+       for(let i =0; i<5; i++){
+        console.log('i: ', i);
+        console.log('test: ', test);
+        setTest(i);
+       }
   }, []);
-
-  console.log(FileSystem.documentDirectory + "SQLite/golf.db");
 
   const Data = [
     {

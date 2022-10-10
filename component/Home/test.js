@@ -1,5 +1,3 @@
-const arr = [];
-const test = '1234';
+const arr = [{id: 1}];
 
-arr.push({id: test});
-console.log(arr);
+console.log(Object.keys(arr).length);

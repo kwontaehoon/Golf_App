@@ -10,44 +10,30 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 
 const a = StyleSheet.create({
   container:{
-
+    height: '90%',
+    flexDirection: 'row',
   },
-  header:{
+  left:{
+    borderWidth: 3,
+    borderColor: 'black',
+    flex: 1,
+  },
+  right:{
     borderWidth: 1,
     borderColor: 'black',
-    height: '30%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 3,
   },
   main:{
-    height: '65%',
-    borderWidth: 1,
-    borderColor: 'black',
-    backgroundColor: 'green',
-  },
-  header2:{
-    height: '8%',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    paddingRight: 10,
-  },
-  main2:{
-    flexWrap: 'wrap',
-    alignContent: 'center',
-    borderWidth: 2,
-    borderColor: 'pink',
+    
   },
   box:{
-    width: '50%',
-    height: 210,
-  },
-  imagebox:{
-    height: '88%',
-    padding: 5,
-  },
-  titlebox:{
-    height: '15%',
-    paddingLeft: 5,
+    width: 70,
+    height: 70,
+    backgroundColor: '#f9c2ff',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+
   }
 })
 
@@ -59,8 +45,38 @@ const pathReference = ref(storage, 'images/3.png');
 const listRef = ref(storage, 'images/');
 
 const [address, setAddress] = useState([]);
+// console.log('address: ', address);
 const [photos, setPhotos] = useState([]);
-console.log('photos: ', photos);
+// console.log('photos: ', photos);
+const test = [
+  {
+    id: 1,
+    title: 'First Item',
+  },
+  {
+    id: 2,
+    title: 'Second Item',
+  },
+  {
+    id: 3,
+    title: 'Third Item',
+  },
+  {
+    id: 4,
+    title: 'Third Item',
+  },
+  {
+    id: 5,
+    title: 'Third Item',
+  },
+  {
+    id: 6,
+    
+  },
+  {
+    id: 7,
+  }
+];
 
 useEffect(()=>{
   console.log('useEffect');
@@ -72,91 +88,51 @@ const func = async() => {
     let arr = [];
     res.items.forEach((x) => {
       arr.push(x.fullPath);
-      console.log('arr: ', arr);
     });
     setAddress(arr);
-  })
-  .catch((error) => {
-    console.log(error);
+    func2(arr);
   });
 }
 
-const func2 = async() => {
+const func2 = (a) => {
   console.log('func2');
   let arr = [];
-  address.map(x => {
+  a.map(x => {
     const starsRef = ref(storage, x);
     getDownloadURL(starsRef)
     .then((url) => {
       arr.push({url});
-      console.log('arr2: ', arr);
-      if(arr.length === address.length){
+      if(arr.length === a.length){
         setPhotos(arr);
       }
   })})
+  setTest(11);
 }
 func();
-func2();
+
+
 }, []);
 
 const renderItem = ({ item }) => (
-  <View style={a.item}>
-    <Text style={a.title}>{item.url}</Text>
+  <View style={a.box}>
+      <View></View>
   </View>
 );
 
-  return (
+  return photos.length !== 0 ? (
     <View style={a.container}>
+      <View style={a.left}>
+        <View style={a.main}>
+            <FlatList data={test} renderItem={renderItem}
+            horizontal={false} />
+        </View>
+      </View>
+      <View style={a.right}></View>
       {/* <Image source={{uri: photos[0]}} style={{width: '50%', height: '50%'}}></Image>
       <Image source={{uri: photos[1]}} style={{width: '50%', height: '50%'}}></Image> */}
-      <View style={a.header}>
-        <Text style={{fontSize: 30}}>앨범</Text>
-      </View>
-      <View style={a.main}>
-        <View style={a.header2}>
-          <Icon name='navicon' size={20}></Icon>
-        </View>
-        <FlatList style={a.main2} data={photos} renderItem={renderItem}>
-          {/* <View style={a.box}>
-            <View style={a.imagebox}>
-              <Image source={{uri: photos[0]}} style={{width: '100%', height: '100%', borderRadius: 10,}} /> 
-            </View>
-            <View style={a.titlebox}>
-              <Text style={{fontSize: 12}}>images</Text>
-              <Text style={{fontSize: 12}}>{address.length}</Text>
-            </View>
-          </View>
-          <View style={a.box}>
-            <View style={a.imagebox}>
-              <Image source={{uri: photos[0]}} style={{width: '100%', height: '100%', borderRadius: 10,}} /> 
-            </View>
-            <View style={a.titlebox}>
-              <Text style={{fontSize: 12}}>images</Text>
-              <Text style={{fontSize: 12}}>{address.length}</Text>
-            </View>
-          </View>
-          <View style={a.box}>
-            <View style={a.imagebox}>
-              <Image source={{uri: photos[0]}} style={{width: '100%', height: '100%', borderRadius: 10,}} /> 
-            </View>
-            <View style={a.titlebox}>
-              <Text style={{fontSize: 12}}>images</Text>
-              <Text style={{fontSize: 12}}>{address.length}</Text>
-            </View>
-          </View>
-          <View style={a.box}>
-            <View style={a.imagebox}>
-              <Image source={{uri: photos[0]}} style={{width: '100%', height: '100%', borderRadius: 10,}} /> 
-            </View>
-            <View style={a.titlebox}>
-              <Text style={{fontSize: 12}}>images</Text>
-              <Text style={{fontSize: 12}}>{address.length}</Text>
-            </View>
-          </View> */}
-        </FlatList>
-      </View>
+      
     </View>
-  )
+  ) : ( <View><Text>로딩중</Text></View>)
 }
 
 export default Album

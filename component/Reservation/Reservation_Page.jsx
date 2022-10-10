@@ -3,7 +3,9 @@ import {View, Text, StyleProp} from 'react-native'
 
 const Reservation_Page = () => {
   return (
-    <View></View>
+    <View>
+      <Text>검색</Text>
+    </View>
   )
 }
 

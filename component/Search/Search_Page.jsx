@@ -1,5 +1,7 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {View, Text, StyleSheet, FlatList, SafeAreaView, StatusBar} from 'react-native'
+import * as SQLite from "expo-sqlite";
+import * as FileSystem  from 'expo-file-system'
 
 const a = StyleSheet.create({
   container: {
@@ -20,49 +22,62 @@ const a = StyleSheet.create({
 });
 const Search_Page = () => {
 
+  const db = SQLite.openDatabase('golf.db');
+
+  useEffect(() => {
+    db.transaction((tx) => {
+      tx.executeSql("SELECT * FROM kwon", [], (tx, results)=>{
+       console.log('정보: ', results.rows._array);
+        }, error => {console.log('error: ', error);});
+       })
+    
+  }, []);
+
+  console.log(FileSystem.documentDirectory + "SQLite/golf.db");
+
   const Data = [
     {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+      id: 1,
       title: 'First Item',
     },
     {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+      id: 2,
       title: 'Second Item',
     },
     {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      id: 3,
       title: 'Third Item',
     },
     {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      id: 4,
       title: 'Third Item',
     },
     {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      id: 5,
       title: 'Third Item',
     },
     {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      id: 6,
       title: 'Third Item',
     },
     {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      id: 7,
       title: 'Third Item',
     },
     {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      id: 8,
       title: 'Third Item',
     },
     {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      id: 9,
       title: 'Third Item',
     },
     {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      id: 10,
       title: 'Third Item',
     },
     {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      id: 11,
       title: 'Third Item',
     },
   ];

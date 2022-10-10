@@ -130,14 +130,22 @@ const Reservation = () => {
 
   const app = firebaseConfig;
   const db = getFirestore(app);
-  const sqlitedb = SQLite.openDatabase('golf.db');
+  const sqlitedb = SQLite.openDatabase('test.db');
 
   console.log('sqlite: ', sqlitedb);
 
+  // const db = SQLite.openDatabase('test.db');
+  // // const db2 = DatabaseConnection.getConnection();
+
+  // console.log(FileSystem.documentDirectory + "SQLite/test.db");
+
+
   const [reservation_info, setReservation_info] = useState([]); // firebase 방 정보
+  console.log('reservation_info: ', reservation_info);
   const [info, setInfo] = useState([]); // sqlite 정보
   console.log('info: ', info);
   const [week, setWeek] = useState([]); // 날짜
+  console.log('week: ', week);
   const [date, setDate] = useState(Array.from({length: 14}, () => { return false })); // 선택 날짜
   const [scroll, setScroll] = useState(false); // 예약 상세정보 display
   const [scroll2, setScroll2] = useState(false); // 방만들기 display
@@ -160,12 +168,7 @@ const Reservation = () => {
   }
 ]
 
-const Item = ({ formatted, day, id }) => (
-  <TouchableOpacity style={a.item} key={id} onPress={()=>date_click(id)}>
-    <View><Text style={{fontWeight: 'bold'}}>{formatted}</Text></View>
-    {weekend(formatted, day, id)}
-  </TouchableOpacity>
-);
+
 const weekend = (formatted, day, id) => {
   let color = '';
   switch(formatted){
@@ -178,7 +181,7 @@ const weekend = (formatted, day, id) => {
          </View>
 }
 
-const Item2 = ({ item }) => (
+const renderItem2 = ({ item }) => (
   <TouchableOpacity style={a.item2} key={item.grpemail} onPress={()=>setScroll(!scroll)}>
     <View style={a.content2}><Text>{item.location}</Text></View>
     <View style={a.content2}><Text>{item.title}</Text></View>
@@ -190,20 +193,25 @@ const Item2 = ({ item }) => (
   </TouchableOpacity>
 );
 
+const Item = ({ formatted, day, id }) => (
+  <TouchableOpacity style={a.item} key={id} onPress={()=>date_click(id)}>
+    <View><Text style={{fontWeight: 'bold'}}>{formatted}</Text></View>
+    {weekend(formatted, day, id)}
+  </TouchableOpacity>
+);
+
 const renderItem = ({ item }) => (
     <Item formatted={item.formatted} day={item.day} id={item.id} />
 );
 
-const renderItem2 = ({ item }) => (
-    <Item2 item={item} />
-);
 
 useEffect(() => {
   sqlitedb.transaction((tx) => {
-    tx.executeSql("SELECT * FROM golfcourse", [], (tx, results)=>{
+    tx.executeSql("SELECT * FROM kwon", [], (tx, results)=>{
      setInfo(results.rows._array);
-      }, error => {console.log('error');});
+      }, error => {console.log('error: ', error);});
      })
+  
 }, []);
 
 useEffect(()=>{
@@ -225,6 +233,7 @@ useEffect(()=>{
 }, []);
 
 const date_click = (e) => {
+  console.log('e: ', e);
   let arr = Array.from({length: 14}, () => { return false });
   arr[e] = !arr[e];
   setDate(arr);

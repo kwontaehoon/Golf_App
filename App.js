@@ -16,13 +16,28 @@ import MyPage from './component/MyPage/MyPage_Page'
 import MyPageMain from './component/MyPage/Main'
 import SignUp from './component/MyPage/SignUp'
 import LoginOk from './component/MyPage/LoginOk'
+import * as SQLite from "expo-sqlite";
+// import * as FileSystem  from 'expo-file-system'
+
 
 LogBox.ignoreAllLogs();
+
+const database = SQLite.openDatabase("golf.db")
+const db2 = SQLite.openDatabase('golf.db');
 
 const App = () => {
 
   const Stack = createStackNavigator();
   const Tab = createBottomTabNavigator();
+
+  useEffect(() => {
+    db2.transaction((tx) => {
+      tx.executeSql("SELECT * FROM kwon", [], (tx, results)=>{
+       console.log(results.rows._array);
+        }, error => {console.log('error: ', error);});
+       })
+    
+  }, []);
 
   return (
     <NavigationContainer>

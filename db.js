@@ -12,7 +12,7 @@ export default async function openDatabase() {
     }
 
     await FileSystem.downloadAsync(
-      Asset.fromModule(require('./assets/golf.db')).uri,
+      // Asset.fromModule(require('./assets/golf.db')).uri,
       FileSystem.documentDirectory + "SQLite/golf.db"
     );
     

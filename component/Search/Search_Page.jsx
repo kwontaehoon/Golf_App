@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react'
-import {View, Text, StyleSheet, Image, Pressable} from 'react-native'
+import {View, Text, StyleSheet, Image, Pressable, TouchableOpacity} from 'react-native'
 import * as SQLite from "expo-sqlite";
 import * as FileSystem  from 'expo-file-system'
-import launchImageLibrary from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 
 const a = StyleSheet.create({
   container: {
@@ -10,6 +10,8 @@ const a = StyleSheet.create({
     borderColor: 'black',
     marginTop: 50,
     height: 500,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   circle:{
     borderWidth: 1,
@@ -17,37 +19,52 @@ const a = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
+  },
+  button:{
+    width: 100,
+    height: 30,
+    borderWidth: 1,
+    borderColor: 'black',
+  },
+  thumbnail: {
+    width: 300,
+    height: 300,
+    resizeMode: "contain"
   }
 });
 const Search_Page = () => {
 
-  const [response, setResponse] = useState(null);
-  const onSelectImage = () => {
-    console.log('aa');
+  const [selectedImage, setSelectedImage] = useState(null);
 
-    launchImageLibrary(
-      {
-        mediaType: "photo",
-        maxWidth: 512,  
-        maxHeight: 512,
-        includeBase64: Platform.OS === 'android',
-      },
-      (res) => {
-        console.log(res);
-        if (res.didCancel) return;
-        setResponse(res);
-      },
-    )
+  let openImagePickerAsync = async () => {
+    let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    if (pickerResult.cancelled === true) {
+      return;
+    }
+    setSelectedImage({ localUri: pickerResult.uri });
+    uploadBytes(storageRef, selectedImage.localUri).then((snapshot) => {
+      console.log('Uploaded a blob or file!');
+    });
+  };
+
+  if (selectedImage !== null) {
+    return (
+      <View style={a.container}>
+        <Image
+          source={{ uri: selectedImage.localUri }}
+          style={a.thumbnail}
+        />
+      </View>
+    );
   }
 
   return (
     <View style={a.container}>
-      <Text>gg</Text>
-      <Pressable style={a.circle} onPress={onSelectImage}>
-        <Image style={a.circle} source={{uri: response?.assets[0]?.uri}} />
-      </Pressable>
+      <TouchableOpacity style={a.button} onPress={openImagePickerAsync}>
+        <Text>버튼</Text>
+      </TouchableOpacity>
     </View>
-  )
+  );
 }
 
 export default Search_Page

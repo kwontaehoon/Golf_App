@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native'
-import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage"
+import { getStorage, ref, listAll, getDownloadURL, uploadBytes } from "firebase/storage"
 import firebaseConfig from '../../firebase'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import * as ImagePicker from 'expo-image-picker';
 
 // react-native reanimated
 // reanimated-bottom-sheet
@@ -64,11 +65,18 @@ const Album = () => {
 const app = firebaseConfig;
 const storage = getStorage();
 const pathReference = ref(storage, 'images/3.png');
+const storageRef = ref(storage, 'images/mountains.jpeg');
 
 const [title, setTitle] = useState(['','images/']);
 const [photos, setPhotos] = useState([]);
+console.log('photos: ', photos);
 const [album, setAlbum] = useState(0); // 앨범 터치하면 display
 const [test, setTest] = useState(0); // useeffect 끝나면 photo length
+const [selectedImage, setSelectedImage] = useState({localUri: null});
+console.log(selectedImage);
+if(selectedImage !== null){
+  console.log(selectedImage.localUri);
+}
 
 
 useEffect(()=>{
@@ -79,7 +87,6 @@ let kwon = [];
 const func = () => {
   console.log('func');
   title.map((x, index) => {
-    console.log('x: ', x);
 
     const listRef = ref(storage, x);
   listAll(listRef)
@@ -98,6 +105,7 @@ const func2 = (a, index) => {
   let arr = [];
   let arr2 = [];
   a.map(x => {
+    console.log('x: ', x);
     const starsRef = ref(storage, x);
     getDownloadURL(starsRef)
     .then((url) => {
@@ -129,6 +137,21 @@ const List1 = () => {
 return arr;
 }
 
+let openImagePickerAsync = async () => {
+  let pickerResult = await ImagePicker.launchImageLibraryAsync();
+  if (pickerResult.cancelled === true) {
+    return;
+  }
+  setSelectedImage({ localUri: pickerResult.uri });
+  const metadata = {
+    contentType: 'image/jpeg',
+  };
+  const uploadTask = uploadBytes(storageRef, selectedImage.localUri, metadata);
+  // uploadBytes(storageRef, selectedImage.localUri).then((snapshot) => {
+  //   console.log('Uploaded a blob or file!');
+  // });
+};
+
 const renderItem = ({ item }) => (
   <TouchableOpacity onPress={() => setAlbum(item.id-1)}>
     <Image style={a.image} source={{uri: item.url[0].url}}></Image>
@@ -138,7 +161,7 @@ const renderItem = ({ item }) => (
 
   return test === title.length ? (
     <View style={a.container}>
-       <TouchableOpacity style={a.addbox}>
+       <TouchableOpacity style={a.addbox} onPress={openImagePickerAsync}>
           <Icon name='plus' size={18} />
         </TouchableOpacity>
       <View style={a.left}>

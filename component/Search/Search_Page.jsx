@@ -1,108 +1,52 @@
 import React, {useState, useEffect} from 'react'
-import {View, Text, StyleSheet, FlatList, SafeAreaView, StatusBar} from 'react-native'
+import {View, Text, StyleSheet, Image, Pressable} from 'react-native'
 import * as SQLite from "expo-sqlite";
 import * as FileSystem  from 'expo-file-system'
+import launchImageLibrary from 'react-native-image-picker';
 
 const a = StyleSheet.create({
   container: {
-    marignTop: 50,
     borderWidth: 1,
     borderColor: 'black',
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: 50,
+    height: 500,
   },
-  item: {
-    backgroundColor: '#f9c2ff',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 32,
-  },
+  circle:{
+    borderWidth: 1,
+    borderColor: 'black',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  }
 });
 const Search_Page = () => {
 
-  const db = SQLite.openDatabase('golf.db');
+  const [response, setResponse] = useState(null);
+  const onSelectImage = () => {
+    console.log('aa');
 
-  useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql("SELECT * FROM kwon", [], (tx, results)=>{
-       console.log('정보: ', results.rows._array);
-        }, error => {console.log('error: ', error);});
-       });
+    launchImageLibrary(
+      {
+        mediaType: "photo",
+        maxWidth: 512,  
+        maxHeight: 512,
+        includeBase64: Platform.OS === 'android',
+      },
+      (res) => {
+        console.log(res);
+        if (res.didCancel) return;
+        setResponse(res);
+      },
+    )
+  }
 
-       const k = () => {
-        console.log('k');
-       }
-
-       const t = () => {
-        console.log('t');
-       }
-
-       k();
-       t();
-       console.log('앙');
-    
-  }, []);
-
-  const Data = [
-    {
-      id: 1,
-      title: 'First Item',
-    },
-    {
-      id: 2,
-      title: 'Second Item',
-    },
-    {
-      id: 3,
-      title: 'Third Item',
-    },
-    {
-      id: 4,
-      title: 'Third Item',
-    },
-    {
-      id: 5,
-      title: 'Third Item',
-    },
-    {
-      id: 6,
-      title: 'Third Item',
-    },
-    {
-      id: 7,
-      title: 'Third Item',
-    },
-    {
-      id: 8,
-      title: 'Third Item',
-    },
-    {
-      id: 9,
-      title: 'Third Item',
-    },
-    {
-      id: 10,
-      title: 'Third Item',
-    },
-    {
-      id: 11,
-      title: 'Third Item',
-    },
-  ];
-
-  const renderItem = ({ item }) => (
-    <View style={a.item}>
-      <Text style={a.title}>{item.title}</Text>
-    </View>
-  );
-  
   return (
-    <SafeAreaView style={a.container}>
-      <FlatList data={Data}
-      renderItem={renderItem} keyExtractor={item => item.id}></FlatList>
-    </SafeAreaView>
+    <View style={a.container}>
+      <Text>gg</Text>
+      <Pressable style={a.circle} onPress={onSelectImage}>
+        <Image style={a.circle} source={{uri: response?.assets[0]?.uri}} />
+      </Pressable>
+    </View>
   )
 }
 

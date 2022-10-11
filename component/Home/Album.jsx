@@ -10,11 +10,23 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 
 const a = StyleSheet.create({
   container:{
-    height: '90%',
+    height: '92.2%',
     flexDirection: 'row',
   },
+  addbox:{
+    width: 50,
+    height: 50,
+    backgroundColor: 'pink',
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 100,
+  },
   left:{
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: 'black',
     flex: 1,
     alignItems: 'center',
@@ -35,111 +47,100 @@ const a = StyleSheet.create({
     padding: 3,
   },
   right:{
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'black',
     flex: 3,
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
   photos:{
-    borderWidth: 1,
-    borderColor: 'black',
     width: '33.3333%',
-    height: 60,
+    height: 80,
   }
-
-
 })
 
 const Album = () => {
-
-
-
 
 const app = firebaseConfig;
 const storage = getStorage();
 const pathReference = ref(storage, 'images/3.png');
 
-const [title, setTitle] = useState(['', 'images/']);
-const [address, setAddress] = useState([]);
-console.log('address: ', address);
+const [title, setTitle] = useState(['','images/']);
 const [photos, setPhotos] = useState([]);
-console.log('photos: ', photos);
-console.log(photos.length);
-const [album, setAlbum] = useState(0);
+const [album, setAlbum] = useState(0); // 앨범 터치하면 display
+const [test, setTest] = useState(0); // useeffect 끝나면 photo length
 
 
 useEffect(()=>{
   console.log('useEffect');
 let kwon = [];
-title.map((x, index) => {
 
-const listRef = ref(storage, x);
 
-const func = async() => {
+const func = () => {
   console.log('func');
+  title.map((x, index) => {
+    console.log('x: ', x);
+
+    const listRef = ref(storage, x);
   listAll(listRef)
   .then((res) => {
     let arr = [];
     res.items.forEach((x) => {
       arr.push(x.fullPath);
     });  
-    func2(arr);
+    func2(arr, index);
   });
+});
 }
 
-const func2 = async(a) => {
+const func2 = (a, index) => {
   console.log('func2');
-  console.log('a: ', a);
   let arr = [];
   let arr2 = [];
-  await a.map(x => {
+  a.map(x => {
     const starsRef = ref(storage, x);
     getDownloadURL(starsRef)
     .then((url) => {
       arr.push({url});
-      console.log('arr: ',arr);
       if(arr.length === a.length){
-        console.log('이잉');
         arr2 = { id: index+1, url: arr };
         kwon.push(arr2);
         setPhotos(kwon);
+        setTest(kwon.length);
       }
   })})
 }
 func();
 
-});
+
 }, []);
 
 const List1 = () => {
   let arr = [];
-  if(title.length === photos.length){
-    console.log('aaaaaaaaaaaaaaaaaaaaaa');
-    console.log(photos.length);
-    console.log(title.length);
+
   photos[album].url.map((x, index) => {
   switch(true){
     case album === 2 : arr.push(<Image style={a.photos} source={{uri: x.url}} key={index}></Image>); break;
     default: arr.push(
       <Image style={a.photos} source={{uri: x.url}} key={index}></Image>
-      
     );
   }
 })
-  }
 return arr;
 }
 
 const renderItem = ({ item }) => (
-  <TouchableOpacity onPress={() => setAlbum(item.id)}>
+  <TouchableOpacity onPress={() => setAlbum(item.id-1)}>
     <Image style={a.image} source={{uri: item.url[0].url}}></Image>
     <View style={a.title}><Text>앨범{item.id}</Text></View>
   </TouchableOpacity>
 );
 
-  return photos.length === 2 ? ( 
+  return test === title.length ? (
     <View style={a.container}>
+       <TouchableOpacity style={a.addbox}>
+          <Icon name='plus' size={18} />
+        </TouchableOpacity>
       <View style={a.left}>
         <View style={a.main}>
             <FlatList data={photos} renderItem={renderItem}
@@ -147,7 +148,7 @@ const renderItem = ({ item }) => (
         </View>
       </View>
       <View style={a.right}>
-        {/* <List1 /> */}
+        <List1 />
       </View>
       {/* <Image source={{uri: photos[0]}} style={{width: '50%', height: '50%'}}></Image>
       <Image source={{uri: photos[1]}} style={{width: '50%', height: '50%'}}></Image> */}

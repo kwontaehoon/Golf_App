@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {View, Text, StyleSheet, LogBox} from 'react-native'
 import { NavigationContainer, TabActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -16,27 +16,43 @@ import MyPage from './component/MyPage/MyPage_Page'
 import MyPageMain from './component/MyPage/Main'
 import SignUp from './component/MyPage/SignUp'
 import LoginOk from './component/MyPage/LoginOk'
-import * as SQLite from "expo-sqlite";
-// import * as FileSystem  from 'expo-file-system'
+import * as SQLite from "expo-sqlite"
+import * as FileSystem  from 'expo-file-system'
+const { Asset } = require('expo-asset')
 
 
 LogBox.ignoreAllLogs();
 
-const database = SQLite.openDatabase("golf.db")
-const db2 = SQLite.openDatabase('golf.db');
+const db = SQLite.openDatabase('test.db');
 
 const App = () => {
 
   const Stack = createStackNavigator();
   const Tab = createBottomTabNavigator();
 
+  const [info, setInfo] = useState([]);
+  console.log('info: ', info);
+
   useEffect(() => {
-    db2.transaction((tx) => {
-      tx.executeSql("SELECT * FROM kwon", [], (tx, results)=>{
+
+    // async function openDatabase(){
+    //   if (!(await FileSystem.getInfoAsync(FileSystem.documentDirectory + 'SQLite')).exists) {
+    //     await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'SQLite');
+    //     console.log('디렉토리만듬');
+    //   }else console.log('디렉토리 못찾음');
+    //   await FileSystem.downloadAsync(
+    //     Asset.fromModule(require('./assets/test.db')).uri,
+    //     FileSystem.documentDirectory + 'SQLite/test.db'
+    //   );
+    //   return SQLite.openDatabase('test.db');
+    // }
+
+    db.transaction((tx) => {
+      tx.executeSql("SELECT * FROM golfcourse", [], (tx, results)=>{
        console.log(results.rows._array);
         }, error => {console.log('error: ', error);});
        })
-    
+    // openDatabase();
   }, []);
 
   return (

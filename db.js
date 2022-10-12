@@ -4,7 +4,7 @@ const SQLite = require('expo-sqlite');
 
 export default async function openDatabase() {
 
-  const database = SQLite.openDatabase("golf.db")
+  const database = SQLite.openDatabase('./assets/test.db')
   database._db.close()
   
     if (!(await FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite")).exists) {
@@ -12,9 +12,9 @@ export default async function openDatabase() {
     }
 
     await FileSystem.downloadAsync(
-      // Asset.fromModule(require('./assets/golf.db')).uri,
-      FileSystem.documentDirectory + "SQLite/golf.db"
+      // Asset.fromModule(require('./assets/test.db')).uri,
+      FileSystem.documentDirectory + "SQLite/test.db"
     );
     
-    return SQLite.openDatabase("golf.db");
+    return SQLite.openDatabase('./assets/test.db');
 }

@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react'
 import {View, Text, StyleSheet, Image, Pressable, TouchableOpacity} from 'react-native'
-import * as SQLite from "expo-sqlite";
-import * as FileSystem  from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker';
 
 const a = StyleSheet.create({
@@ -34,7 +32,6 @@ const a = StyleSheet.create({
 });
 const Search_Page = () => {
 
-  const db = SQLite.openDatabase('test.db');
   const [selectedImage, setSelectedImage] = useState(null);
 
   let openImagePickerAsync = async () => {
@@ -47,24 +44,6 @@ const Search_Page = () => {
       console.log('Uploaded a blob or file!');
     });
   };
-
-  const insert = () => {
-    console.log('insert');
-    db.transaction((tx) => {
-      tx.executeSql(
-        'insert into kwon(id, name) values(2, kk)', [],
-        (tx, results)=>{
-          console.log('dddddddd: ', results);
-        });
-    })
-
-    db.transaction((tx) => {
-      tx.executeSql("SELECT * FROM kwon", [], (tx, results)=>{
-       console.log(results.rows._array);
-        }, error => {console.log('error: ', error);});
-       })
-    console.log('complete');
-  }
 
   if (selectedImage !== null) {
     return (
@@ -81,9 +60,6 @@ const Search_Page = () => {
     <View style={a.container}>
       <TouchableOpacity style={a.button} onPress={openImagePickerAsync}>
         <Text>버튼</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={a.button} onPress={insert}>
-        <Text>insert</Text>
       </TouchableOpacity>
     </View>
   );

@@ -12,3 +12,4 @@ const test = new Set(source);
 console.log(test);
 const test2 = Array.from(test);
 console.log(test2);
+console.lpg();

@@ -52,7 +52,6 @@ const a = StyleSheet.create({
 
 const SignUp = ({navigation, route}) => {
 
-  const [userId, setUserId] = useState('');
   const [userName, setUserName] = useState('');
   const [userPass, setUserPass] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -72,7 +71,7 @@ const SignUp = ({navigation, route}) => {
   }
 
   const overlap_text = () => {
-    if(userId.length === 0 || overlap[0] === false){
+    if(userEmail.length === 0 || overlap[0] === false){
     return(<Text style={{color: 'red'}}>아이디를 다시 입력해주세요.</Text>)
     }else return(<Text style={{color: 'green'}}>사용할 수 있는 아이디입니다.</Text>)
   }
@@ -81,7 +80,6 @@ const SignUp = ({navigation, route}) => {
 
     switch(true){
       // case overlap[1] !== true : alert('중복확인을 해주세요.'); break;
-      case userId.length === 0 : alert('아이디를 입력해주세요.'); break;
       case userName.length === 0 : alert('이름을 입력해주세요.'); break;
       case userPass.length === 0 : alert('비밀번호를 입력해주세요.'); break;
       case userEmail.length === 0 : alert('이메일을 입력해주세요.'); break;
@@ -98,7 +96,9 @@ const SignUp = ({navigation, route}) => {
       })
       .catch((error) => {
           const errorCode = error.code;
+          console.log('errorCode: ', errorCode);
           const errorMessage = error.message;
+          console.log('errorMessage: ', errorMessage);
       });
       break;
     }
@@ -113,11 +113,10 @@ const SignUp = ({navigation, route}) => {
           <SafeAreaView>
               <TextInput style={a.input} placeholder='이름' onChangeText={setUserName}/>
               <View>
-                <TextInput style={[a.input, {width: '60%'}]} placeholder='아이디' onChangeText={setUserId}/>
+                <TextInput style={[a.input, {width: '60%'}]} placeholder='이메일' onChangeText={setUserEmail}/>
                 <TouchableOpacity style={a.overlap} onPress={overlap_check}><Text>중복확인</Text></TouchableOpacity>
               </View>
               <View style={{marginLeft: 15, display: overlap[1] ? 'flex' : 'none'}}>{overlap_text()}</View>
-              <TextInput style={a.input} placeholder='이메일' onChangeText={setUserEmail}/>
               <TextInput style={a.input} placeholder='비밀번호' onChangeText={setUserPass}/>
               <TextInput style={a.input} placeholder='비밀번호 확인'/>
               <View>

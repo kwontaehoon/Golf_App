@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native'
 import { useSelector } from 'react-redux'
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 
@@ -8,31 +8,11 @@ const Store = () => {
 
   const a = StyleSheet.create({
     container:{
-      
-    },
-    filter:{
-      width: '100%',
-      height: 100,
-      position: 'absolute',
-      zIndex: 100,
-      bottom: 50,
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      flexDirection: 'row',
-    },
-    button:{
-      width: 150,
-      height: 50,
-      backgroundColor: 'white',
-      borderRadius: 20,
-      justifyContent: 'center',
-      alignItems: 'center',
     },
     main:{
-      borderWidth: 2,
-      borderColor: 'black',
-      height: '77%',
-      marginTop: 100,
+      backgroundColor: 'white',
+      height: '57.2%',
+      marginTop: 250,
       borderTopEndRadius: 30,
       borderTopStartRadius: 30,
       overflow: 'hidden',
@@ -49,6 +29,17 @@ const Store = () => {
       width: '33.4%',
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    imagebox: {
+      width: '100%',
+      height: '50%',
+      justifyContent: "center",
+      position: 'absolute',
+      top: 0,
+    },
+    image:{
+      flex: 1,
+      
     }
   })
 
@@ -57,7 +48,6 @@ const Store = () => {
   console.log('selectItem: ', selectedItem)
   const [info, setInfo] = useState([]);
   console.log('info: ', info);
-  const [filter, setFilter] = useState(false); // 매장 / 지역 버튼 누르면 배경색깔 변경
 
   useEffect(()=>{
     let arr = [];
@@ -77,9 +67,7 @@ const Store = () => {
       setSelectedItem(info);
     }else{
       const aa = selectedItem.filter((x, index)=>{
-        console.log('x: ', x.title);
         if(x.title.includes(e)){
-          console.log('aa');
           return x;
         }
       })
@@ -97,11 +85,9 @@ const Store = () => {
 
   return (
     <View style={a.container}>
-      <View style={a.filter}>
-        <TouchableOpacity style={[a.button, {backgroundColor: filter ? 'white' : 'skyblue'}]} onPress={()=>setFilter(false)}><Text style={{fontSize: 15, fontWeight: 'bold'}}>매장으로 검색하기</Text></TouchableOpacity>
-        <TouchableOpacity style={[a.button, {backgroundColor: filter ? 'skyblue' : 'white'}]} onPress={()=>setFilter(true)}><Text style={{fontSize: 15, fontWeight: 'bold'}}>지역으로 검색하기</Text></TouchableOpacity>
-        
-      </View>
+       <View style={a.imagebox}>
+        <Image source={require('../../assets/images/course01.jpg')} resizeMode='stretch' style={a.image}></Image>
+       </View>
       <AutocompleteDropdown clearOnFocus={false} closeOnBlur={false}
       closeOnSubmit={false} initialValue={{ id: 1 }} // or just '2'
       onSelectItem={(e)=>select(e)}

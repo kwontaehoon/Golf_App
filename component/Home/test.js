@@ -6,10 +6,8 @@
 
 // arr2 === 1 ? console.log('a') : console.log('b');
 
-const source = 'execute';
+const a = '권태훈';
 
-const test = new Set(source);
-console.log(test);
-const test2 = Array.from(test);
-console.log(test2);
-console.lpg();
+const b = '탵';
+
+console.log(a.includes(b));

@@ -76,9 +76,14 @@ const Store = () => {
     if(e.length === 0){
       setSelectedItem(info);
     }else{
-      selectedItem.map((x, index)=>{
-        console.log('x: ', x);
+      const aa = selectedItem.filter((x, index)=>{
+        console.log('x: ', x.title);
+        if(x.title.includes(e)){
+          console.log('aa');
+          return x;
+        }
       })
+      setSelectedItem(aa);
     }
   }
 
@@ -100,7 +105,7 @@ const Store = () => {
       <AutocompleteDropdown clearOnFocus={false} closeOnBlur={false}
       closeOnSubmit={false} initialValue={{ id: 1 }} // or just '2'
       onSelectItem={(e)=>select(e)}
-      dataSet={selectedItem} onChangeText={(e)=>select_text(e)}
+      dataSet={info} onChangeText={(e)=>select_text(e)}
       suggestionsListMaxHeight={300}
       showClear={false}/>
 

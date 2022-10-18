@@ -57,11 +57,13 @@ const a = StyleSheet.create({
     },
 })
 
-const Reservation2 = ({scroll, setScroll}) => {
+const Reservation2 = ({scroll, setScroll, reservation2}) => {
 
     const animation = useRef(new Animated.Value(0)).current;
-    const [count, setCount] = useState(0); // 인원 수
+    const [count, setCount] = useState(1); // 인원 수
     const [gender, setGender] = useState([false, false]); // 성별 버튼
+
+    console.log(reservation2);
 
     useEffect(() => {
         Animated.timing(animation, {
@@ -74,7 +76,7 @@ const Reservation2 = ({scroll, setScroll}) => {
     const count_people = (e) => {
         if(e === 'up' && count < 100){
             setCount(count + 1);
-        }else if(e === 'down' && count > 0){
+        }else if(e === 'down' && count > 1){
             setCount(count - 1);
         }
     }
@@ -87,7 +89,7 @@ const Reservation2 = ({scroll, setScroll}) => {
         setGender(arr);
     }
 
-  return (
+  return reservation2.length !== 0 ? (
     <Animated.View style={[a.container, {display: scroll ? 'flex' : 'none'}]}>
         <View style={a.header}>
             <Text style={{fontSize: 25, fontWeight: 'bold'}}>조인 등록</Text>
@@ -98,7 +100,16 @@ const Reservation2 = ({scroll, setScroll}) => {
                 <Text style={{fontSize: 18}}>골프장</Text>
             </View>
                 <View style={a.content}>
-                <Text style={{fontSize: 15}}>SG골프클럽</Text>
+                <Text style={{fontSize: 15}}>{reservation2.title}</Text>
+            </View>
+        </View>
+        <View style={a.box1}>
+            <View style={a.title}>
+                <Icon name='check' style={{paddingRight: 10, color: 'orange'}} />
+                <Text style={{fontSize: 18}}>위치</Text>
+            </View>
+                <View style={a.content}>
+                <Text style={{fontSize: 15}}>{reservation2.location}</Text>
             </View>
         </View>
         <View style={a.box1}>
@@ -107,7 +118,7 @@ const Reservation2 = ({scroll, setScroll}) => {
                 <Text style={{fontSize: 18}}>날짜</Text>
             </View>
                 <View style={a.content}>
-                <Text style={{fontSize: 15}}>2022-06-30</Text>
+                <Text style={{fontSize: 15}}>{reservation2.dday}</Text>
             </View>
         </View>
         <View style={a.box1}>
@@ -116,7 +127,7 @@ const Reservation2 = ({scroll, setScroll}) => {
                 <Text style={{fontSize: 18}}>시간</Text>
             </View>
                 <View style={a.content}>
-                <Text style={{fontSize: 15}}>10:30</Text>
+                <Text style={{fontSize: 15}}></Text>
             </View>
         </View>
         <View style={a.box1}>
@@ -160,7 +171,7 @@ const Reservation2 = ({scroll, setScroll}) => {
             <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>취소하기</Text>
         </TouchableOpacity>
     </Animated.View>
-  )
+  ) : ( <View></View>)
 }
 
 export default Reservation2

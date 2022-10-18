@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, FlatList, SafeAreaView, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, FlatList, SafeAreaView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { getDate, addDays, format } from 'date-fns'
@@ -11,6 +11,11 @@ import { getFirestore, collection, getDocs, docSnap, setDoc, doc, getDoc } from 
 
 const a = StyleSheet.create({
   container:{
+  },
+  container2:{
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header:{
     height: '10%',
@@ -142,6 +147,7 @@ const Reservation = () => {
 
   const [reservation_info, setReservation_info] = useState([]); // firebase 방 정보
   console.log('reservation_info: ', reservation_info);
+  const [reservation2, setReservation2] = useState([]);
   const [info, setInfo] = useState([]); // sqlite 정보
   console.log('info: ', info);
   const [week, setWeek] = useState([]); // 날짜
@@ -163,7 +169,7 @@ const weekend = (formatted, day, id) => {
 }
 
 const renderItem2 = ({ item }) => (
-  <TouchableOpacity style={a.item2} key={item.grpemail} onPress={()=>setScroll(!scroll)}>
+  <TouchableOpacity style={a.item2} key={item.grpemail} onPress={()=>select(item)}>
     <View style={a.content2}><Text>{item.location}</Text></View>
     <View style={a.content2}><Text>{item.title}</Text></View>
     <View style={a.content2}><Text>{item.dday}</Text></View>
@@ -214,7 +220,6 @@ useEffect(()=>{
 }, [scroll2]);
 
 const date_click = (e) => {
-  console.log('e: ', e);
   let arr = Array.from({length: 14}, () => { return false });
   arr[e] = !arr[e];
   setDate(arr);
@@ -227,10 +232,15 @@ const read = async() => {
   querySnapshot.forEach((doc) => {
       arr.push(doc.data());
   });
-  setReservation_info(arr);
+  setReservation_info(arr.reverse());
 }
 
-  return (
+const select = (e) => {
+  setReservation2(e);
+  setScroll(!scroll);
+}
+
+  return reservation_info.length !== 0 ? (
     <View style={a.container}>
       <View style={a.header}>
         <FlatList data={week} renderItem={renderItem}
@@ -334,10 +344,14 @@ const read = async() => {
         <TouchableOpacity style={a.add2} onPress={()=>setScroll2(!scroll2)}>
           <Icon name='plus' size={18} />
         </TouchableOpacity>
-        <Reservation2 scroll={scroll} setScroll={setScroll}/>
+        <Reservation2 scroll={scroll} setScroll={setScroll} reservation2={reservation2}/>
         <Reservation_add scroll2={scroll2} setScroll2={setScroll2}/>
-        <FlatList data={reservation_info.reverse()} renderItem={renderItem2} keyExtractor={item => item.id}></FlatList>
+        <FlatList data={reservation_info} renderItem={renderItem2} keyExtractor={item => item.id}></FlatList>
       </SafeAreaView>
+    </View>
+  ) : (
+    <View style={a.container2}>
+      <ActivityIndicator size="large" color='skyblue' />
     </View>
   )
 }

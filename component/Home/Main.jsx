@@ -4,9 +4,6 @@ import Icon from 'react-native-vector-icons/Ionicons'
 
 const a = StyleSheet.create({
     container:{
-        borderWidth: 1,
-        borderColor: 'black',
-        marginTop: 30,
     },
     item: {
         width: 200,
@@ -18,7 +15,7 @@ const a = StyleSheet.create({
     header:{
         backgroundColor: 'pink',
         borderColor: 'black',
-        height: '40%',
+        height: '42%',
     },
     image2:{
         width: '100%',
@@ -30,14 +27,14 @@ const a = StyleSheet.create({
         height: 65,
         backgroundColor: 'white',
         opacity: 0.7,
-        marginTop: 30,
+        marginTop: 60,
         borderRadius: 20,
         flexDirection: 'row',
     },
     location:{
         width: '50%',
         height: 30,
-        marginTop: 120,
+        marginTop: 150,
         alignItems: 'center',
         justifyContent: 'center',
     },

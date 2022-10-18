@@ -10,18 +10,23 @@ const Store = () => {
     container:{
     },
     main:{
+      alignItems: 'center',
+    },
+    main2:{
+      width: '95%',
+      height: '100%',
       backgroundColor: 'white',
-      height: '57.2%',
       marginTop: 250,
       borderTopEndRadius: 30,
       borderTopStartRadius: 30,
       overflow: 'hidden',
       padding: 10,
+      borderWidth: 3,
     },
     box:{
-      height: 120,
       borderBottomWidth: 1,
-      borderColor: 'black',
+      borderColor: 'grey',
+      height: 120,
       flexDirection: 'row',
       justifyContent: 'space-around',
     },
@@ -45,9 +50,7 @@ const Store = () => {
 
   const number = useSelector(state=>state.info);
   const [selectedItem, setSelectedItem] = useState(); // 매장 선택시
-  console.log('selectItem: ', selectedItem)
   const [info, setInfo] = useState([]);
-  console.log('info: ', info);
 
   useEffect(()=>{
     let arr = [];
@@ -96,7 +99,9 @@ const Store = () => {
       showClear={false}/>
 
       <View style={a.main}>
-        <FlatList data={selectedItem} renderItem={renderItem}/>
+        <View style={a.main2}>
+          <FlatList data={selectedItem} renderItem={renderItem}/>
+        </View>
       </View>
     </View>
   )

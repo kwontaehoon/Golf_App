@@ -68,16 +68,15 @@ const Reservation_add = ({scroll2, setScroll2}) => {
     const db = getFirestore(app);
 
     const animation = useRef(new Animated.Value(0)).current;
-    const [count, setCount] = useState(0); // 인원 수
+
+    const [count, setCount] = useState(1); // 인원 수
     const [scroll, setScroll] = useState(false); // 달력 display
-    const [selectDate, setSelectdate] = useState({}); // 날짜 선택 결과값
-    console.log('날짜: ', selectDate);
+    const [selectDate, setSelectdate] = useState(''); // 날짜 선택 결과값
     const [title, setTitle] = useState('');
-    console.log('매장이름: ', title);
     const [location, setLocation] = useState('');
-    const [price, setPrice] = useState('');
-    console.log('가격: ', price);
+    const [price, setPrice] = useState();
     const [memo, setMemo] = useState('');
+    const [reservationlength, setReservationlength] = useState();
 
 
     useEffect(() => {
@@ -87,28 +86,38 @@ const Reservation_add = ({scroll2, setScroll2}) => {
           // 네이티브 레벨에서 진행하게 하는 옵션
         }).start();
       }, [scroll2]);
+    
+    useEffect(()=>{
+        test();
+    });
+
+    const test = async() => {
+        const querySnapshot = await getDocs(collection(db, "reservation"));
+        let count = '';
+        querySnapshot.forEach((doc, index) => {
+            // doc.data() is never undefined for query doc snapshots
+            count = doc.id;
+        });
+        setReservationlength(count);
+    }
+
 
     const count_people = (e) => {
         if(e === 'up' && count < 100){
             setCount(count + 1);
-        }else if(e === 'down' && count > 0){
+        }else if(e === 'down' && count > 1){
             setCount(count - 1);
         }
     }
 
-    const date = () => {
-        if(Object.keys(selectDate).length === 0){
-            return(
-                <Text>-</Text>
-            ) 
-        }else return(
-            <Text style={{fontWeight: 'bold'}}>{Object.keys(selectDate)}</Text>
-        )
-    }
-
     const storage_add = async() => {
-        console.log('Firestore 데이터베이스 등록');
-        await setDoc(doc(db, "reservation", "mario"), {
+        switch(true){
+            case title.length === 0: alert('골프장을 입력해주세요.'); return;
+            case selectDate.length === 0: alert('날짜를 선택해주세요.'); return;
+            case price === undefined: alert('가격을 입력해주세요.'); return;
+            default: alert('방만들기 완료!!'); break;
+        }
+        await setDoc(doc(db, "reservation", String(Number(reservationlength)+1)), {
           people: count,
           dday: selectDate,
           location: location,
@@ -116,7 +125,17 @@ const Reservation_add = ({scroll2, setScroll2}) => {
           title: title,
           memo: memo,
       });
+      setScroll2(!scroll2);
     }
+
+    const select = (e) => {
+        if(e !== null){
+            setTitle(e.title);
+            setLocation(e.location);
+        }
+    }
+
+
 
   return (
     <Animated.View style={[a.container, {display: scroll2 ? 'flex' : 'none'}]}>
@@ -132,15 +151,13 @@ const Reservation_add = ({scroll2, setScroll2}) => {
                 <AutocompleteDropdown clearOnFocus={false} closeOnBlur={false}
       closeOnSubmit={false} initialValue={{ id: 1 }} // or just '2'
       dataSet={[
-        { id: '1', title: 'Alpha' },
-        { id: '2', title: 'Beta' },
-        { id: '3', title: 'Gamma' },
+        { title: 'Alpha', location: '서울' },
+        { title: 'Beta', location: '인천' },
+        { title: 'Gamma', location: '김포' },
       ]}
-      showClear={false}
       inputContainerStyle={{width: 150, backgroundColor: 'white'}}
-      suggestionsListContainerStyle={{position: 'absolute', zIndex: 999, backgroundColor: 'white'}}
       debounce={600}
-      onSelectItem={setTitle}
+      onSelectItem={(e)=>select(e)}
       />
 
         </View>
@@ -150,7 +167,7 @@ const Reservation_add = ({scroll2, setScroll2}) => {
                 <Text style={{fontSize: 18}}>위치</Text>
             </View>
                 <View style={a.content}>
-                <Text style={{fontSize: 15}}></Text>
+                <Text style={{fontSize: 15, paddingRight: 20}}>{location}</Text>
             </View>
         </View>
         <View style={a.box1}>
@@ -160,7 +177,7 @@ const Reservation_add = ({scroll2, setScroll2}) => {
             </View>
             <View style={[a.content, {flexDirection: 'row'}]}>
                 <View style={{ padding: 6, borderRadius: 10, marginRight: 5}}>
-                    {date()}
+                    <Text>{selectDate}</Text>
                 </View>
                 <TouchableOpacity style={{ backgroundColor: '#ddd', padding: 6, borderRadius: 10}}
                     onPress={()=>setScroll(!scroll)}>
@@ -197,8 +214,8 @@ const Reservation_add = ({scroll2, setScroll2}) => {
                 <TextInput placeholder='남길말을 입력해주세요' onChangeText={(e)=>{setMemo(e)}}></TextInput>
             </View>
         </View>
-        <TouchableOpacity style={[a.submit, {backgroundColor: 'green'}]}>
-            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}} onPress={storage_add}>등록하기</Text>
+        <TouchableOpacity style={[a.submit, {backgroundColor: 'green'}]} onPress={storage_add}>
+            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>등록하기</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[a.submit, {backgroundColor: 'red'}]} onPress={()=>setScroll2(!scroll2)}>
             <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>취소하기</Text>

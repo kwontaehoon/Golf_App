@@ -23,7 +23,7 @@ const CalendarView = ({scroll, setScroll, selectDate, setSelectdate}) => {
         console.log(f);
 
         const arr = {[e]: {selected: true}};
-        setSelectdate(arr);
+        setSelectdate(e);
         setScroll(!scroll);
     }
   return (

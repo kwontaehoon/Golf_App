@@ -150,24 +150,6 @@ const Reservation = () => {
   const [scroll2, setScroll2] = useState(false); // 방만들기 display
   const [add_display, setAdd_display] = useState(false); // 더보기 display
 
-  const arr = [
-    {
-    coursename: '레익스빌골프클럽',  //골프장 이름
-    coursearea: '강원도 속초시',  //위치
-    coursemoney: '200,000원',  //참가가격
-    dday : '2020-12-12',   //일시 
-    gender: '무관',   //성별조건
-    age: '무관',       //연령조건
-    average: 100,  //에버리지조건
-    rec: 10,          //모집 인원
-    admin: 'test',  //개설자
-    rcount: 3,       //모집된 인원
-    grpname: 'asd, bsb, ddd',  //참가원 별명
-    grpemail: 'sdf@asdf.com, asd@ad.com,text@dd.com'  //참가원 이메일
-  }
-]
-
-
 const weekend = (formatted, day, id) => {
   let color = '';
   switch(formatted){
@@ -229,7 +211,7 @@ useEffect(()=>{
 
 useEffect(()=>{
   read();
-}, []);
+}, [scroll2]);
 
 const date_click = (e) => {
   console.log('e: ', e);
@@ -354,7 +336,7 @@ const read = async() => {
         </TouchableOpacity>
         <Reservation2 scroll={scroll} setScroll={setScroll}/>
         <Reservation_add scroll2={scroll2} setScroll2={setScroll2}/>
-        <FlatList data={reservation_info} renderItem={renderItem2} keyExtractor={item => item.id}></FlatList>
+        <FlatList data={reservation_info.reverse()} renderItem={renderItem2} keyExtractor={item => item.id}></FlatList>
       </SafeAreaView>
     </View>
   )

@@ -27,7 +27,7 @@ const a = StyleSheet.create({
     },
     box1:{
         width: '80%',
-        height: 55,
+        height: 65,
         backgroundColor: 'white',
         opacity: 0.7,
         marginTop: 30,

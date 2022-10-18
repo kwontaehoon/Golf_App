@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 const a = StyleSheet.create({
     container:{
@@ -16,25 +16,30 @@ const a = StyleSheet.create({
         fontSize: 32,
     },
     header:{
-        borderWidth: 1,
+        backgroundColor: 'pink',
         borderColor: 'black',
-        height: '15%',
-        flexDirection: 'row',
-        padding: 20,
+        height: '40%',
     },
-    head1:{
-        flex: 2,
-        justifyContent: 'center',
-    },
-    head2:{
-        flex: 1,
-        alignItems: 'flex-end'
+    image2:{
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
     },
     box1:{
-        height: '20%',
-        justifyContent: 'space-around',
+        width: '80%',
+        height: 55,
+        backgroundColor: 'white',
+        opacity: 0.7,
+        marginTop: 30,
+        borderRadius: 20,
+        flexDirection: 'row',
+    },
+    location:{
+        width: '50%',
+        height: 30,
+        marginTop: 120,
         alignItems: 'center',
-        padding: 10,
+        justifyContent: 'center',
     },
     box2:{
         height: 190,
@@ -63,7 +68,7 @@ const a = StyleSheet.create({
         fontWeight: 'bold',
       },
     box4:{
-        height: '15%',
+        height: '10%',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'ivory'
@@ -71,44 +76,23 @@ const a = StyleSheet.create({
 })
 const Main = ({navigation}) => {
 
-    const DATA = [
-        {
-          id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-          title: "First Item",
-          src: require('../../assets/images/course01.jpg'),
-        },
-        {
-          id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-          title: "Second Item",
-          src: require('../../assets/images/course02.jpg'),
-        },
-        {
-          id: "58694a0f-3da1-471f-bd96-145571e29d72",
-          title: "Third Item",
-          src: require('../../assets/images/course03.jpg'),
-        },
-      ];
-
-      const renderItem = ({ item }) => (
-        <View style={a.item}>
-          <Image source={item.src} style={{width: '100%', height: '100%'}} resizeMode='stretch'></Image>
-        </View>
-      );
-
   return (
     <View style={a.container}>
         <View style={a.header}>
-            <TouchableOpacity style={a.head1} onPress={()=>navigation.navigate('로그인')}>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>로그인을 해주세요.</Text>
-            </TouchableOpacity>
-            <View style={a.head2}>
-                <Icon name ='bell' size={20}></Icon>
-            </View>
-        </View>
-        <View style={a.box1}>
-            <FlatList data={DATA} renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
-            horizontal={true} />
+            <ImageBackground source={require('../../assets/images/course02.jpg')} resizeMode='stretch' style={a.image2}>
+                <View style={a.box1}>
+                    <View style={{flex: 1, padding: 5, flexDirection: 'row', alignItems: 'center'}}>
+                        <Image source={require('../../assets/images/sun.png')} style={{width: '65%', height: '80%'}} resizeMode='stretch'></Image>
+                        <Text style={{fontSize: 18, marginLeft: 5, fontWeight: 'bold'}}>18º</Text>
+                    </View>
+                    <View style={{flex: 2,}}></View>
+                    <View style={{flex: 1, padding: 5, justifyContent: 'center'}}><Text style={{fontSize: 12}}>남서풍 1m/s</Text></View>
+                </View>
+                <View style={a.location}>
+                    <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
+                        <Icon name='location-outline' size={18}></Icon>경기도 김포시 유현로 200</Text>
+                </View>
+            </ImageBackground>
         </View>
 
         <View style={a.box2}>

@@ -145,7 +145,6 @@ const Reservation = () => {
   const [info, setInfo] = useState([]); // sqlite 정보
   console.log('info: ', info);
   const [week, setWeek] = useState([]); // 날짜
-  console.log('week: ', week);
   const [date, setDate] = useState(Array.from({length: 14}, () => { return false })); // 선택 날짜
   const [scroll, setScroll] = useState(false); // 예약 상세정보 display
   const [scroll2, setScroll2] = useState(false); // 방만들기 display

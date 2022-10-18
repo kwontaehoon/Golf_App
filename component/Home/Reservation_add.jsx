@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import CalendarView from './CalendarView'
 import firebaseConfig from '../../firebase'
 import { getFirestore, collection, getDocs, docSnap, setDoc, doc, getDoc } from 'firebase/firestore'
+import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 
 const a = StyleSheet.create({
     container:{
@@ -70,11 +71,14 @@ const Reservation_add = ({scroll2, setScroll2}) => {
     const [count, setCount] = useState(0); // 인원 수
     const [scroll, setScroll] = useState(false); // 달력 display
     const [selectDate, setSelectdate] = useState({}); // 날짜 선택 결과값
+    console.log('날짜: ', selectDate);
     const [title, setTitle] = useState('');
+    console.log('매장이름: ', title);
     const [location, setLocation] = useState('');
     const [price, setPrice] = useState('');
-    const [all_people, setAll_people] = useState();
+    console.log('가격: ', price);
     const [memo, setMemo] = useState('');
+
 
     useEffect(() => {
         Animated.timing(animation, {
@@ -105,9 +109,12 @@ const Reservation_add = ({scroll2, setScroll2}) => {
     const storage_add = async() => {
         console.log('Firestore 데이터베이스 등록');
         await setDoc(doc(db, "reservation", "mario"), {
-          employment: "plumber",
-          outfitColor: "red",
-          specialAttack: "fireball"
+          people: count,
+          dday: selectDate,
+          location: location,
+          price: price,
+          title: title,
+          memo: memo,
       });
     }
 
@@ -122,9 +129,20 @@ const Reservation_add = ({scroll2, setScroll2}) => {
                 <Icon name='check' style={{paddingRight: 10, color: 'orange'}} />
                 <Text style={{fontSize: 18}}>골프장</Text>
             </View>
-                <View style={a.content}>
-                <TextInput placeholder='골프장을 입력해주세요' onChangeText={(e)=>{setTitle(e)}}></TextInput>
-            </View>
+                <AutocompleteDropdown clearOnFocus={false} closeOnBlur={false}
+      closeOnSubmit={false} initialValue={{ id: 1 }} // or just '2'
+      dataSet={[
+        { id: '1', title: 'Alpha' },
+        { id: '2', title: 'Beta' },
+        { id: '3', title: 'Gamma' },
+      ]}
+      showClear={false}
+      inputContainerStyle={{width: 150, backgroundColor: 'white'}}
+      suggestionsListContainerStyle={{position: 'absolute', zIndex: 999, backgroundColor: 'white'}}
+      debounce={600}
+      onSelectItem={setTitle}
+      />
+
         </View>
         <View style={a.box1}>
             <View style={a.title}>
@@ -156,7 +174,7 @@ const Reservation_add = ({scroll2, setScroll2}) => {
                 <Text style={{fontSize: 18}}>가격</Text>
             </View>
                 <View style={a.content}>
-                <TextInput placeholder='금액을 입력해주세요'></TextInput>
+                <TextInput placeholder='금액을 입력해주세요' onChangeText={setPrice}></TextInput>
             </View>
         </View>
         <View style={a.box1}>
@@ -180,7 +198,7 @@ const Reservation_add = ({scroll2, setScroll2}) => {
             </View>
         </View>
         <TouchableOpacity style={[a.submit, {backgroundColor: 'green'}]}>
-            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>등록하기</Text>
+            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}} onPress={storage_add}>등록하기</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[a.submit, {backgroundColor: 'red'}]} onPress={()=>setScroll2(!scroll2)}>
             <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>취소하기</Text>

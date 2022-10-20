@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, TextInput, Switch, Button } from 'react-native'
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, getRedirectResult, FacebookAuthProvider } from "firebase/auth";
 import authentication from '../../firebase'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const a = StyleSheet.create({
     container:{
@@ -66,6 +67,7 @@ const Main = ({navigation}) => {
         .then((userCredential) => {
         const user = userCredential.user;
         console.log(user);
+        AsyncStorage.setItem('user', email);
         navigation.push('마이페이지');
         })
         .catch((error) => {
@@ -97,6 +99,19 @@ const Main = ({navigation}) => {
         });
     }
 
+    const kwon = async() => {
+        try {
+            const value = await AsyncStorage.getAllKeys();
+            const value2 = await AsyncStorage.getItem('user');
+            if(value !== null) {
+              // value previously stored
+            }
+            console.log(value);
+            console.log(value2);
+          } catch(e) {
+            // error reading value
+          }
+    }
   return (
     <View style={a.container}>
     <View style={a.header}>
@@ -128,6 +143,12 @@ const Main = ({navigation}) => {
     <TouchableOpacity style={a.bar} onPress={()=>navigation.push('회원가입')}>
         <Text style={a.text}>회원가입</Text>
     </TouchableOpacity>
+
+    <TouchableOpacity style={a.bar} onPress={kwon}>
+        <Text style={a.text}>AsyncStorage 읽기</Text>
+
+    </TouchableOpacity>
+
     </View>
 </View>
   )

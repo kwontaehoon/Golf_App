@@ -37,7 +37,7 @@ const Store = () => {
     },
     imagebox: {
       width: '100%',
-      height: '50%',
+      height: '40%',
       justifyContent: "center",
       position: 'absolute',
       top: 0,

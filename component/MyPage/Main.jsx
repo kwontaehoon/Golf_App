@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, TextInput, Swit
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, getRedirectResult, FacebookAuthProvider } from "firebase/auth";
 import authentication from '../../firebase'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoginOk from './LoginOk';
 
 const a = StyleSheet.create({
     container:{
@@ -48,6 +49,8 @@ const a = StyleSheet.create({
 const Main = ({navigation}) => {
 
  
+    const [userinfo, SetUserinfo] = useState(null);
+    console.log('userinfo: ', userinfo);
     const [email, setEmail] = useState();
     console.log('email: ', email);
     const [password, setPassword] = useState();
@@ -56,11 +59,20 @@ const Main = ({navigation}) => {
     const [isEnabled, setIsEnabled] = useState(false); // 자동로그인 스위치
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
-
-
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
     const provider2 = new FacebookAuthProvider();
+
+    useEffect(()=>{
+       user();
+    }, []);
+
+    const user = async() => {
+        const value = await AsyncStorage.getItem('user');
+        if(value !== null){
+            SetUserinfo(value);
+        }
+    }
 
     const login = async() => {
         await signInWithEmailAndPassword(auth, email, password)
@@ -99,20 +111,7 @@ const Main = ({navigation}) => {
         });
     }
 
-    const kwon = async() => {
-        try {
-            const value = await AsyncStorage.getAllKeys();
-            const value2 = await AsyncStorage.getItem('user');
-            if(value !== null) {
-              // value previously stored
-            }
-            console.log(value);
-            console.log(value2);
-          } catch(e) {
-            // error reading value
-          }
-    }
-  return (
+  return userinfo === null ? (
     <View style={a.container}>
     <View style={a.header}>
         <Text style={{fontSize: 30, fontWeight: 'bold'}}>로그인</Text>
@@ -144,14 +143,9 @@ const Main = ({navigation}) => {
         <Text style={a.text}>회원가입</Text>
     </TouchableOpacity>
 
-    <TouchableOpacity style={a.bar} onPress={kwon}>
-        <Text style={a.text}>AsyncStorage 읽기</Text>
-
-    </TouchableOpacity>
-
     </View>
 </View>
-  )
+  ) : (<LoginOk />)
 }
 
 export default Main

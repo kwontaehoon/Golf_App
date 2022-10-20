@@ -86,11 +86,10 @@ const SignUp = ({navigation, route}) => {
       // case userAddress.length === 0 : alert('주소를 입력해주세요.'); break;
       case userAddress2.length === 0 : alert('상세주소를 입력해주세요.'); break;
       default :
-      console.log('ddd');
       createUserWithEmailAndPassword(auth, userEmail, userPass)
       .then((userCredential) => {
           // Signed in
-          console.log('회원가입 완료');
+          alert('회원가입 완료');
           navigation.push('로그인');
           const user = userCredential.user;
       })
@@ -98,6 +97,12 @@ const SignUp = ({navigation, route}) => {
           const errorCode = error.code;
           console.log('errorCode: ', errorCode);
           const errorMessage = error.message;
+          if(errorCode === 'auth/invalid-email'){
+            alert('이메일 형식을 확인해주세요.');
+          }else
+          if(errorCode === 'auth/weak-password'){
+            alert('비밀번호가 6자리이여야합니다.');
+          }
           console.log('errorMessage: ', errorMessage);
       });
       break;

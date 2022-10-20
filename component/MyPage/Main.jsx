@@ -80,7 +80,7 @@ const Main = ({navigation}) => {
         const user = userCredential.user;
         console.log(user);
         AsyncStorage.setItem('user', email);
-        navigation.push('마이페이지');
+        navigation.navigate('마이페이지');
         })
         .catch((error) => {
             console.log('error');

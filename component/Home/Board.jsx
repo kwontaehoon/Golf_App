@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Scrollview } from 'react-nati
 import { getFirestore, collection, getDocs, docSnap, setDoc, doc, getDoc } from 'firebase/firestore';
 import firebaseConfig from '../../firebase'
 import moment from "moment"
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const a = StyleSheet.create({
     container:{
@@ -50,6 +51,8 @@ const a = StyleSheet.create({
 const Board = ({navigation, route}) => {
 
     console.log('route: ', route.params);
+    console.log(AsyncStorage.getItem('user'));
+    
 
     const app = firebaseConfig;
     const db = getFirestore(app);
@@ -62,6 +65,7 @@ const Board = ({navigation, route}) => {
     }, [route]);
 
     const board_insert = async() => {
+        const user = await AsyncStorage.getItem('user');
 
         if(route.params !== undefined){
             console.log(route.params[0]);
@@ -71,7 +75,7 @@ const Board = ({navigation, route}) => {
             title: route.params[0],
             content: route.params[1],
             date: moment().format("YYYY.MM.DD HH:mm"),
-            writer: "희원",
+            writer: user,
         });
     }
 
@@ -84,6 +88,15 @@ const Board = ({navigation, route}) => {
         console.log('arr: ', arr);
         console.log('board 총길이: ', arr.length); 
         setInfo(arr);
+    }
+
+    const write = async() => {
+
+        const value = await AsyncStorage.getItem('user');
+        if(value === null){
+            alert('로그인 후 이용해주세요.');
+        }else navigation.navigate('글쓰기');
+        
     }
    
     const List1 = () => {
@@ -101,10 +114,12 @@ const Board = ({navigation, route}) => {
             })
         return arr;
     }
+
+    
   return (
     <View style={a.container}>
         <View style={a.header}>
-            <TouchableOpacity style={a.write} onPress={()=>navigation.navigate('글쓰기')}>
+            <TouchableOpacity style={a.write} onPress={write}>
                 <Text style={{fontWeight: 'bold'}}>글 쓰기</Text>
             </TouchableOpacity>
         </View>

@@ -1,11 +1,13 @@
 import React, {useState, useEffect ,useRef } from 'react'
-import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Animated, TouchableOpacity, Touchable } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import CalendarView from './CalendarView'
 import firebaseConfig from '../../firebase'
 import { getFirestore, collection, getDocs, docSnap, setDoc, doc, getDoc } from 'firebase/firestore'
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useSelector } from 'react-redux'
 
 const a = StyleSheet.create({
     container:{
@@ -65,7 +67,9 @@ const a = StyleSheet.create({
 const Reservation_add = ({scroll2, setScroll2}) => {
 
     const app = firebaseConfig;
-    const db = getFirestore(app);
+    const db = getFirestore(app); /////////////////////////////////////////////////////////////////
+    const number = useSelector(state=>state.info);
+    console.log(number);
 
     const animation = useRef(new Animated.Value(0)).current;
 
@@ -76,8 +80,9 @@ const Reservation_add = ({scroll2, setScroll2}) => {
     const [location, setLocation] = useState('');
     const [price, setPrice] = useState();
     const [memo, setMemo] = useState('');
-    const [reservationlength, setReservationlength] = useState();
-
+    const [reservationlength, setReservationlength] = useState(); // 만든 방 전체 갯수
+    const [show, setShow] = useState(false); // 날짜 선택시 display
+    const [info, setInfo] = useState([]); // 전체 골프장
 
     useEffect(() => {
         Animated.timing(animation, {
@@ -85,6 +90,11 @@ const Reservation_add = ({scroll2, setScroll2}) => {
           useNativeDriver: true, // 애니메이션 처리작업을 자바스크립트 엔진이 아닌
           // 네이티브 레벨에서 진행하게 하는 옵션
         }).start();
+        let arr = [];
+        number.filter((x, index)=>{
+            arr.push({id: index+1, title: x.course_name});
+          })
+          setInfo(arr);
       }, [scroll2]);
     
     useEffect(()=>{
@@ -136,7 +146,6 @@ const Reservation_add = ({scroll2, setScroll2}) => {
     }
 
 
-
   return (
     <Animated.View style={[a.container, {display: scroll2 ? 'flex' : 'none'}]}>
         <CalendarView scroll={scroll} setScroll={setScroll} selectDate={selectDate} setSelectdate={setSelectdate} />
@@ -154,10 +163,16 @@ const Reservation_add = ({scroll2, setScroll2}) => {
         { title: 'Alpha', location: '서울' },
         { title: 'Beta', location: '인천' },
         { title: 'Gamma', location: '김포' },
+        { title: 'Gamma', location: '김포' },
+        { title: 'Gamma', location: '김포' },
+        { title: 'Gamma', location: '김포' },
+        { title: 'Gamma', location: '김포' },
+        { title: 'Gamma', location: '김포' },
       ]}
-      inputContainerStyle={{width: 150, backgroundColor: 'white'}}
-      debounce={600}
+      inputContainerStyle={{width: 200, backgroundColor: 'pink'}}
       onSelectItem={(e)=>select(e)}
+      containerStyle={{backgroundColor: 'black'}}
+      position={'absolute'}
       />
 
         </View>
@@ -179,10 +194,23 @@ const Reservation_add = ({scroll2, setScroll2}) => {
                 <View style={{ padding: 6, borderRadius: 10, marginRight: 5}}>
                     <Text>{selectDate}</Text>
                 </View>
-                <TouchableOpacity style={{ backgroundColor: '#ddd', padding: 6, borderRadius: 10}}
+                <TouchableOpacity style={{ backgroundColor: 'skyblue', padding: 6, borderRadius: 10}}
                     onPress={()=>setScroll(!scroll)}>
                 <Text style={{fontWeight: 'bold'}}>날짜선택</Text>
                 </TouchableOpacity>
+            </View>
+        </View>
+        <View style={a.box1}>
+            <View style={a.title}>
+                <Icon name='check' style={{paddingRight: 10, color: 'orange'}} />
+                <Text style={{fontSize: 18}}>시간</Text>
+            </View>
+                <View style={a.content}>
+                <TouchableOpacity style={{ backgroundColor: 'skyblue', padding: 6, borderRadius: 10}}
+                onPress={()=>setShow(!show)}>
+                <Text style={{fontWeight: 'bold'}}>시간선택</Text>
+                </TouchableOpacity>
+                {show && (<DateTimePicker mode="time" value={new Date()} onChange={()=>setShow(!show)}/> )}
             </View>
         </View>
         <View style={a.box1}>

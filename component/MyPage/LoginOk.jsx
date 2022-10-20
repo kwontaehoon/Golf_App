@@ -11,7 +11,7 @@ const LoginOk = ({navigation}) => {
       console.log('error: ', error);
     }
     console.log('Done.')
-    navigation.push('로그인');
+    navigation.navigate('로그인');
   }
 
   const kwon = async() => {

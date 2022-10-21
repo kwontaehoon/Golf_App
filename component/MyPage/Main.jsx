@@ -85,6 +85,7 @@ const Main = ({navigation}) => {
         .catch((error) => {
             console.log('error');
             alert('아이디와 비밀번호를 확인해주세요.');
+            console.log();
             const errorCode = error.code;
             const errorMessage = error.message;
         });

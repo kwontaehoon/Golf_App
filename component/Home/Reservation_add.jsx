@@ -12,10 +12,10 @@ import { useSelector } from 'react-redux'
 const a = StyleSheet.create({
     container:{
         width: 400,
-        height: 650,
+        height: 700,
         position: 'absolute',
         backgroundColor: 'white',
-        top: -100,
+        top: '-20%',
         left: 5,
         zIndex: 100,
         padding: 10,
@@ -76,6 +76,9 @@ const Reservation_add = ({scroll2, setScroll2}) => {
     const [count, setCount] = useState(1); // 인원 수
     const [scroll, setScroll] = useState(false); // 달력 display
     const [selectDate, setSelectdate] = useState(''); // 날짜 선택 결과값
+    const [selectTime, setSelectTime] = useState(); // 시간 선택 결과값
+    console.log(selectTime);
+    console.log(selectTime === undefined);
     const [title, setTitle] = useState('');
     const [location, setLocation] = useState('');
     const [price, setPrice] = useState();
@@ -124,12 +127,15 @@ const Reservation_add = ({scroll2, setScroll2}) => {
         switch(true){
             case title.length === 0: alert('골프장을 입력해주세요.'); return;
             case selectDate.length === 0: alert('날짜를 선택해주세요.'); return;
+            case selectTime === undefined: alert('시간을 선택해주세요.'); return;
             case price === undefined: alert('가격을 입력해주세요.'); return;
             default: alert('방만들기 완료!!'); break;
         }
         await setDoc(doc(db, "reservation", String(Number(reservationlength)+1)), {
+          id: reservationlength + 1,
           people: count,
           dday: selectDate,
+          dtime: selectTime,
           location: location,
           price: price,
           title: title,
@@ -143,6 +149,12 @@ const Reservation_add = ({scroll2, setScroll2}) => {
             setTitle(e.title);
             setLocation(e.location);
         }
+    }
+    const select2 = (e) => {
+        const date = new Date(e.nativeEvent.timestamp);
+        console.log(date);
+        setShow(!show);
+        setSelectTime(`${date.getHours()}시 ${date.getMinutes()}분`);
     }
 
 
@@ -205,12 +217,15 @@ const Reservation_add = ({scroll2, setScroll2}) => {
                 <Icon name='check' style={{paddingRight: 10, color: 'orange'}} />
                 <Text style={{fontSize: 18}}>시간</Text>
             </View>
-                <View style={a.content}>
+            <View style={[a.content, {flexDirection: 'row'}]}>
+                <View style={{ padding: 6, borderRadius: 10, marginRight: 5}}>
+                    <Text>{selectTime}</Text>
+                </View>
                 <TouchableOpacity style={{ backgroundColor: 'skyblue', padding: 6, borderRadius: 10}}
                 onPress={()=>setShow(!show)}>
                 <Text style={{fontWeight: 'bold'}}>시간선택</Text>
                 </TouchableOpacity>
-                {show && (<DateTimePicker mode="time" value={new Date()} onChange={()=>setShow(!show)}/> )}
+                {show && (<DateTimePicker mode="time" value={new Date()} onChange={(e)=>select2(e)} /> )}
             </View>
         </View>
         <View style={a.box1}>

@@ -77,20 +77,6 @@ const a = StyleSheet.create({
   },
   dropdown1RowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
 
-  add:{
-    height: 50,
-    justifyContent: 'center',
-  },
-  addbox:{
-    height: 100,
-    borderWidth: 1,
-    borderColor: 'black',
-    justifyContent: 'space-around',
-  },
-  addbox2:{
-    height: 30,
-    paddingLeft: 10,
-  },
   subheader:{
     height: '5%',
     backgroundColor: '#ddd',
@@ -154,7 +140,6 @@ const Reservation = () => {
   const [date, setDate] = useState(Array.from({length: 14}, () => { return false })); // 선택 날짜
   const [scroll, setScroll] = useState(false); // 예약 상세정보 display
   const [scroll2, setScroll2] = useState(false); // 방만들기 display
-  const [add_display, setAdd_display] = useState(false); // 더보기 display
 
 const weekend = (formatted, day, id) => {
   let color = '';
@@ -169,13 +154,16 @@ const weekend = (formatted, day, id) => {
 }
 
 const renderItem2 = ({ item }) => (
-  <TouchableOpacity style={a.item2} key={item.grpemail} onPress={()=>select(item)}>
+  <TouchableOpacity style={[a.item2, {backgroundColor: item.people === 5 ?  'lightgrey' : 'white'}]} key={item.grpemail} onPress={()=>select(item)}>
     <View style={a.content2}><Text>{item.location}</Text></View>
     <View style={a.content2}><Text>{item.title}</Text></View>
-    <View style={a.content2}><Text>{item.dday}</Text></View>
     <View style={a.content2}>
-      <Text>{item.price}</Text>
-      <View style={{alignItems: 'flex-end', width: '100%', marginRight: 30, marginTop: 10,}}><Text> 3 / 5</Text></View>
+      <Text>{item.dday}</Text>
+      <Text>{item.dtime}</Text>
+    </View>
+    <View style={a.content2}>
+      <Text>{item.price} 원</Text>
+      <View style={{alignItems: 'flex-end', width: '100%', marginRight: 30, marginTop: 10,}}><Text> {item.people} / 5</Text></View>
     </View>
   </TouchableOpacity>
 );
@@ -236,8 +224,10 @@ const read = async() => {
 }
 
 const select = (e) => {
-  setReservation2(e);
-  setScroll(!scroll);
+  if(e.people !== 5){
+    setReservation2(e);
+    setScroll(!scroll);
+  }
 }
 
   return reservation_info.length !== 0 ? (
@@ -322,18 +312,7 @@ const select = (e) => {
           rowStyle={a.dropdown2RowStyle}
           rowTextStyle={a.dropdown2RowTxtStyle}
         />
-        <TouchableOpacity style={a.add} onPress={()=>setAdd_display(!add_display)}>
-          <Text style={{fontSize: 15, color: 'gray'}}>+ 더보기</Text>
-        </TouchableOpacity>
       </View>
-        <View style={[a.addbox, {display: add_display ? 'flex' : 'none'}]}>
-          <View style={a.addbox2}>
-            <Text>모집인원: </Text>
-          </View>
-          <View style={a.addbox2}>
-            <Text>가격: </Text>
-          </View>
-        </View>
       <View style={a.subheader}>
         <View style={a.subtitle}><Text>위치</Text></View>
         <View style={a.subtitle}><Text>골프장 명</Text></View>

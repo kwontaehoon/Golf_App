@@ -1,6 +1,8 @@
 import React, {useState, useEffect ,useRef } from 'react'
 import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import { getFirestore, doc, updateDoc } from 'firebase/firestore'
+import firebaseConfig from '../../firebase'
 
 const a = StyleSheet.create({
     container:{
@@ -8,7 +10,7 @@ const a = StyleSheet.create({
         height: 650,
         position: 'absolute',
         backgroundColor: 'white',
-        top: -100,
+        top: '-20%',
         left: 5,
         zIndex: 100,
         padding: 10,
@@ -65,6 +67,10 @@ const Reservation2 = ({scroll, setScroll, reservation2}) => {
 
     console.log(reservation2);
 
+    const app = firebaseConfig;
+    const db = getFirestore(app); /////////////////////////////////////////////////////////////////
+    const washingtonRef = doc(db, "reservation", String(reservation2.id));
+
     useEffect(() => {
         Animated.timing(animation, {
           toValue: scroll ? 0 : -1000,
@@ -74,7 +80,7 @@ const Reservation2 = ({scroll, setScroll, reservation2}) => {
       }, [scroll]);
 
     const count_people = (e) => {
-        if(e === 'up' && count < 100){
+        if(e === 'up' && count < reservation2.people){
             setCount(count + 1);
         }else if(e === 'down' && count > 1){
             setCount(count - 1);
@@ -87,6 +93,14 @@ const Reservation2 = ({scroll, setScroll, reservation2}) => {
         }else arr = [false, true];
         console.log('arr: ', arr);
         setGender(arr);
+    }
+
+    const update = async() => {
+        console.log(reservation2.people+1);
+        await updateDoc(washingtonRef, {
+            people: reservation2.people + 1
+          });
+        alert('업데이트 완료');
     }
 
   return reservation2.length !== 0 ? (
@@ -127,7 +141,7 @@ const Reservation2 = ({scroll, setScroll, reservation2}) => {
                 <Text style={{fontSize: 18}}>시간</Text>
             </View>
                 <View style={a.content}>
-                <Text style={{fontSize: 15}}></Text>
+                <Text style={{fontSize: 15}}>{reservation2.dtime}</Text>
             </View>
         </View>
         <View style={a.box1}>
@@ -164,7 +178,7 @@ const Reservation2 = ({scroll, setScroll, reservation2}) => {
                     <TouchableOpacity onPress={()=>count_people('down')}><Icon name="toggle-down" style={{fontSize: 20, marginLeft: 4}}></Icon></TouchableOpacity>
             </View>
         </View>
-        <TouchableOpacity style={[a.submit, {backgroundColor: 'green'}]}>
+        <TouchableOpacity style={[a.submit, {backgroundColor: 'green'}]} onPress={update}>
             <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>등록하기</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[a.submit, {backgroundColor: 'red'}]} onPress={()=>setScroll(!scroll)}>

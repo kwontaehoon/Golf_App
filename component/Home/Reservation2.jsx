@@ -80,7 +80,7 @@ const Reservation2 = ({scroll, setScroll, reservation2}) => {
       }, [scroll]);
 
     const count_people = (e) => {
-        if(e === 'up' && count < reservation2.people){
+        if(e === 'up' && count < reservation2.sumpeople - reservation2.currentpeople){
             setCount(count + 1);
         }else if(e === 'down' && count > 1){
             setCount(count - 1);
@@ -96,11 +96,11 @@ const Reservation2 = ({scroll, setScroll, reservation2}) => {
     }
 
     const update = async() => {
-        console.log(reservation2.people+1);
         await updateDoc(washingtonRef, {
-            people: reservation2.people + 1
+            currentpeople: reservation2.currentpeople + count
           });
         alert('업데이트 완료');
+        setScroll(!scroll);
     }
 
   return reservation2.length !== 0 ? (

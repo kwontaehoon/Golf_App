@@ -8,6 +8,7 @@ import { getFirestore, collection, getDocs, docSnap, setDoc, doc, getDoc } from 
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSelector } from 'react-redux'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const a = StyleSheet.create({
     container:{
@@ -124,6 +125,7 @@ const Reservation_add = ({scroll2, setScroll2}) => {
     }
 
     const storage_add = async() => {
+        const value = await AsyncStorage.getItem('user');
         switch(true){
             case title.length === 0: alert('골프장을 입력해주세요.'); return;
             case selectDate.length === 0: alert('날짜를 선택해주세요.'); return;
@@ -132,8 +134,10 @@ const Reservation_add = ({scroll2, setScroll2}) => {
             default: alert('방만들기 완료!!'); break;
         }
         await setDoc(doc(db, "reservation", String(Number(reservationlength)+1)), {
-          id: reservationlength + 1,
-          people: count,
+          id: String(Number(reservationlength)+1),
+          master: value,
+          sumpeople: count,
+          currentpeople: 1,
           dday: selectDate,
           dtime: selectTime,
           location: location,

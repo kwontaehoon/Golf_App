@@ -8,6 +8,7 @@ import Reservation_add from './Reservation_add'
 import * as SQLite from "expo-sqlite"
 import firebaseConfig from '../../firebase'
 import { getFirestore, collection, getDocs, docSnap, setDoc, doc, getDoc } from 'firebase/firestore'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const a = StyleSheet.create({
   container:{
@@ -154,7 +155,7 @@ const weekend = (formatted, day, id) => {
 }
 
 const renderItem2 = ({ item }) => (
-  <TouchableOpacity style={[a.item2, {backgroundColor: item.people === 5 ?  'lightgrey' : 'white'}]} key={item.grpemail} onPress={()=>select(item)}>
+  <TouchableOpacity style={[a.item2, {backgroundColor: item.sumpeople === item.currentpeople ?  'lightgrey' : 'white'}]} key={item.grpemail} onPress={()=>select(item)}>
     <View style={a.content2}><Text>{item.location}</Text></View>
     <View style={a.content2}><Text>{item.title}</Text></View>
     <View style={a.content2}>
@@ -163,7 +164,7 @@ const renderItem2 = ({ item }) => (
     </View>
     <View style={a.content2}>
       <Text>{item.price} 원</Text>
-      <View style={{alignItems: 'flex-end', width: '100%', marginRight: 30, marginTop: 10,}}><Text> {item.people} / 5</Text></View>
+      <View style={{alignItems: 'flex-end', width: '100%', marginRight: 30, marginTop: 10,}}><Text> {item.currentpeople} / {item.sumpeople}</Text></View>
     </View>
   </TouchableOpacity>
 );
@@ -224,10 +225,17 @@ const read = async() => {
 }
 
 const select = (e) => {
-  if(e.people !== 5){
+  if(e.currentpeople !== e.sumpeople){
     setReservation2(e);
     setScroll(!scroll);
   }
+}
+
+const add = async() => {
+  const value = await AsyncStorage.getItem('user');
+  if(value !== null){
+    setScroll2(!scroll2);
+  }else alert('로그인 해주세요');
 }
 
   return reservation_info.length !== 0 ? (
@@ -320,7 +328,7 @@ const select = (e) => {
         <View style={a.subtitle}><Text>가격 및 인원</Text></View>
       </View>
       <SafeAreaView style={{height: '71%'}}>
-        <TouchableOpacity style={a.add2} onPress={()=>setScroll2(!scroll2)}>
+        <TouchableOpacity style={a.add2} onPress={add}>
           <Icon name='plus' size={18} />
         </TouchableOpacity>
         <Reservation2 scroll={scroll} setScroll={setScroll} reservation2={reservation2}/>

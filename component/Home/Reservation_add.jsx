@@ -126,6 +126,7 @@ const Reservation_add = ({scroll2, setScroll2}) => {
 
     const storage_add = async() => {
         const value = await AsyncStorage.getItem('user');
+        console.log('value: ', value);
         switch(true){
             case title.length === 0: alert('골프장을 입력해주세요.'); return;
             case selectDate.length === 0: alert('날짜를 선택해주세요.'); return;

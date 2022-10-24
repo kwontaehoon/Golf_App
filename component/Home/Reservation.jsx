@@ -233,6 +233,7 @@ const select = (e) => {
 
 const add = async() => {
   const value = await AsyncStorage.getItem('user');
+  console.log('value: ', value);
   if(value !== null){
     setScroll2(!scroll2);
   }else alert('로그인 해주세요');

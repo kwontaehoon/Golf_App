@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { getStorage, ref, listAll, getDownloadURL, uploadBytes } from "firebase/storage"
 import firebaseConfig from '../../firebase'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -13,6 +13,11 @@ const a = StyleSheet.create({
   container:{
     height: '92.2%',
     flexDirection: 'row',
+  },
+  container2:{
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   addbox:{
     width: 50,
@@ -177,7 +182,9 @@ const renderItem = ({ item }) => (
       <Image source={{uri: photos[1]}} style={{width: '50%', height: '50%'}}></Image> */}
       
     </View>
-  ) : ( <View><Text>로딩중</Text></View>)
+  ) : ( <View style={a.container2}>
+        <ActivityIndicator size="large" color='skyblue' />
+      </View>)
 }
 
 export default Album

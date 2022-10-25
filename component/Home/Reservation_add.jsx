@@ -9,6 +9,7 @@ import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSelector } from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SelectDropdown from 'react-native-select-dropdown'
 
 const a = StyleSheet.create({
     container:{
@@ -63,6 +64,28 @@ const a = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 20,
     },
+    dropdown2BtnStyle: {
+        width: '45%',
+        height: 30,
+        backgroundColor: 'white',
+        borderRadius: 8,
+      },
+      dropdown2BtnTxtStyle: {
+        textAlign: 'center',
+        fontSize: 12,
+      },
+      dropdown2DropdownStyle: {
+        backgroundColor: '#444',
+        borderBottomLeftRadius: 12,
+        borderBottomRightRadius: 12,
+      },
+      dropdown2RowStyle: {backgroundColor: '#444', borderBottomColor: '#C5C5C5'},
+      dropdown2RowTxtStyle: {
+        color: '#FFF',
+        textAlign: 'center',
+        fontWeight: 'bold',
+      },
+      dropdown1RowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
 })
 
 const Reservation_add = ({scroll2, setScroll2}) => {
@@ -70,7 +93,6 @@ const Reservation_add = ({scroll2, setScroll2}) => {
     const app = firebaseConfig;
     const db = getFirestore(app); /////////////////////////////////////////////////////////////////
     const number = useSelector(state=>state.info);
-    console.log(number);
 
     const animation = useRef(new Animated.Value(0)).current;
 
@@ -96,7 +118,7 @@ const Reservation_add = ({scroll2, setScroll2}) => {
         }).start();
         let arr = [];
         number.filter((x, index)=>{
-            arr.push({id: index+1, title: x.course_name});
+            arr.push(x.course_name);
           })
           setInfo(arr);
       }, [scroll2]);
@@ -162,6 +184,8 @@ const Reservation_add = ({scroll2, setScroll2}) => {
         setSelectTime(`${date.getHours()}시 ${date.getMinutes()}분`);
     }
 
+    const dataSet = ['레익스골프장'];
+
 
   return (
     <Animated.View style={[a.container, {display: scroll2 ? 'flex' : 'none'}]}>
@@ -174,23 +198,28 @@ const Reservation_add = ({scroll2, setScroll2}) => {
                 <Icon name='check' style={{paddingRight: 10, color: 'orange'}} />
                 <Text style={{fontSize: 18}}>골프장</Text>
             </View>
-                <AutocompleteDropdown clearOnFocus={false} closeOnBlur={false}
-      closeOnSubmit={false} initialValue={{ id: 1 }} // or just '2'
-      dataSet={[
-        { title: 'Alpha', location: '서울' },
-        { title: 'Beta', location: '인천' },
-        { title: 'Gamma', location: '김포' },
-        { title: 'Gamma', location: '김포' },
-        { title: 'Gamma', location: '김포' },
-        { title: 'Gamma', location: '김포' },
-        { title: 'Gamma', location: '김포' },
-        { title: 'Gamma', location: '김포' },
-      ]}
-      inputContainerStyle={{width: 200, backgroundColor: 'pink'}}
-      onSelectItem={(e)=>select(e)}
-      containerStyle={{backgroundColor: 'black'}}
-      position={'absolute'}
-      />
+            <SelectDropdown
+          data={info}
+          // defaultValueByIndex={1}
+          // defaultValue={'England'}
+          onSelect={select}
+          defaultButtonText={'골프장 선택'}
+          buttonTextAfterSelection={(selectedItem, index) => {
+            return selectedItem;
+          }}
+          rowTextForSelection={(item, index) => {
+            return item;
+          }}
+          buttonStyle={a.dropdown2BtnStyle}
+          buttonTextStyle={a.dropdown2BtnTxtStyle}
+          renderDropdownIcon={isOpened => {
+            return <Icon name={isOpened ? 'chevron-up' : 'chevron-down'} size={15} />;
+          }}
+          dropdownIconPosition={'right'}
+          dropdownStyle={a.dropdown2DropdownStyle}
+          rowStyle={a.dropdown2RowStyle}
+          rowTextStyle={a.dropdown2RowTxtStyle}
+        />
 
         </View>
         <View style={a.box1}>
@@ -211,8 +240,8 @@ const Reservation_add = ({scroll2, setScroll2}) => {
                 <View style={{ padding: 6, borderRadius: 10, marginRight: 5}}>
                     <Text>{selectDate}</Text>
                 </View>
-                <TouchableOpacity style={{ backgroundColor: 'skyblue', padding: 6, borderRadius: 10}}
-                    onPress={()=>setScroll(!scroll)}>
+                <TouchableOpacity style={{ backgroundColor: '#ddd', padding: 6, borderRadius: 4, borderWidth: 1, }}
+                onPress={()=>setShow(!show)}>
                 <Text style={{fontWeight: 'bold'}}>날짜선택</Text>
                 </TouchableOpacity>
             </View>
@@ -226,7 +255,7 @@ const Reservation_add = ({scroll2, setScroll2}) => {
                 <View style={{ padding: 6, borderRadius: 10, marginRight: 5}}>
                     <Text>{selectTime}</Text>
                 </View>
-                <TouchableOpacity style={{ backgroundColor: 'skyblue', padding: 6, borderRadius: 10}}
+                <TouchableOpacity style={{ backgroundColor: '#ddd', padding: 6, borderRadius: 4, borderWidth: 1, }}
                 onPress={()=>setShow(!show)}>
                 <Text style={{fontWeight: 'bold'}}>시간선택</Text>
                 </TouchableOpacity>

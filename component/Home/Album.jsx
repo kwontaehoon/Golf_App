@@ -4,6 +4,7 @@ import { getStorage, ref, listAll, getDownloadURL, uploadBytes } from "firebase/
 import firebaseConfig from '../../firebase'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import * as ImagePicker from 'expo-image-picker';
+import uuid from "uuid";
 
 // react-native reanimated
 // reanimated-bottom-sheet
@@ -78,22 +79,16 @@ console.log('photos: ', photos);
 const [album, setAlbum] = useState(0); // 앨범 터치하면 display
 const [test, setTest] = useState(0); // useeffect 끝나면 photo length
 const [selectedImage, setSelectedImage] = useState({localUri: null});
-console.log(selectedImage);
-if(selectedImage !== null){
-  console.log(selectedImage.localUri);
-}
 
 
 useEffect(()=>{
   console.log('useEffect');
+
 let kwon = [];
 
-
 const func = () => {
-  console.log('func');
   title.map((x, index) => {
-
-    const listRef = ref(storage, x);
+  const listRef = ref(storage, x);
   listAll(listRef)
   .then((res) => {
     let arr = [];
@@ -106,11 +101,9 @@ const func = () => {
 }
 
 const func2 = (a, index) => {
-  console.log('func2');
   let arr = [];
   let arr2 = [];
   a.map(x => {
-    console.log('x: ', x);
     const starsRef = ref(storage, x);
     getDownloadURL(starsRef)
     .then((url) => {
@@ -126,7 +119,7 @@ const func2 = (a, index) => {
 func();
 
 
-}, []);
+}, [selectedImage]);
 
 const List1 = () => {
   let arr = [];
@@ -147,14 +140,43 @@ let openImagePickerAsync = async () => {
   if (pickerResult.cancelled === true) {
     return;
   }
-  setSelectedImage({ localUri: pickerResult.uri });
+
+  async function uploadImageAsync(uri) {
+    // Why are we using XMLHttpRequest? See:
+    // https://github.com/expo/expo/issues/2402#issuecomment-443726662
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function (e) {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+      xhr.send(null);
+    });
+  
+    const fileRef = ref(getStorage(), uuid.v4());
+    const result = await uploadBytes(fileRef, blob);
+  
+    // We're done with the blob, close and release it
+    blob.close();
+  
+    return await getDownloadURL(fileRef);
+  }
+
+  
+  const uploadUrl = await uploadImageAsync(pickerResult.uri);
   const metadata = {
     contentType: 'image/jpeg',
   };
-  const uploadTask = uploadBytes(storageRef, selectedImage.localUri, metadata);
-  // uploadBytes(storageRef, selectedImage.localUri).then((snapshot) => {
-  //   console.log('Uploaded a blob or file!');
-  // });
+  uploadBytes(storageRef, selectedImage.localUri, metadata).then((snapshot) => {
+    alert('사진 업로드 완료!!');
+  })
+
+  setSelectedImage({ localUri: pickerResult.uri });
+  
 };
 
 const renderItem = ({ item }) => (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Scrollview } from 'react-native'
-import { getFirestore, collection, getDocs, docSnap, setDoc, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, docSnap, setDoc, doc } from 'firebase/firestore';
 import firebaseConfig from '../../firebase'
 import moment from "moment"
 import AsyncStorage from '@react-native-async-storage/async-storage';

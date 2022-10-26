@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react'
 import {View, Text, StyleSheet, TouchableOpacity, ImageBackground, FlatList} from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
+import { getFirestore, collection, getDocs, docSnap, setDoc, doc } from 'firebase/firestore';
+import firebaseConfig from '../../firebase'
 
 
 const a = StyleSheet.create({
@@ -12,6 +15,12 @@ const a = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'center',
+  },
+  container2:{
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+    paddingBottom: 30,
   },
   subcontainer1:{
     backgroundColor: 'white',
@@ -56,6 +65,9 @@ const a = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  content:{
+    fontWeight: 'bold',
+  },
   subcontainer2:{
     backgroundColor: 'white',
     width: '90%',
@@ -69,43 +81,62 @@ const a = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: 'grey',
     height: 100,
-    marginTop: 30,
+    marginTop: 20,
+    padding: 10,
   },
-  content:{
-    fontWeight: 'bold',
-
+  minibox:{
+    borderWidth: 1,
+    width: 45,
+    height: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F9EA85',
   }
 })
 
 const LoginOk = ({navigation}) => {
 
-  const DATA = [
-    {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      title: "First Item",
-    },
-    {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      title: "Second Item",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      title: "Third Item",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      title: "Third Item",
-    },
-  ];
+  const app = firebaseConfig;
+  const db = getFirestore(app);
 
   useEffect(()=>{
     AsyncStorage.getItem('user', (err, result) => { //user_id에 담긴 아이디 불러오기
       setEmail(result);
     });
   })
+
+  useEffect(()=>{
+    reservation();
+}, []);
+
+const reservation = async() => {
+    const user = await AsyncStorage.getItem('user');
+    console.log('user: ', user);
+
+    let arr = [];
+    const querySnapshot = await getDocs(collection(db, "reservation"));
+    querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    if(doc.data().master === user){
+      arr.push(doc.data());
+    }
+    });
+    setInfo(arr);
+}
+
+
+  const [info, setInfo] = useState([]); // 본인 예약 정보
+  console.log('info: ', info);
+  console.log(info.length);
   
   const renderItem = ({ item }) => (
-    <View style={a.box}></View>
+    <View style={a.box}>
+      <View style={a.minibox}><Text>모집중</Text></View>
+      <Text style={{fontWeight: 'bold', marginTop: 2}}>{item.title} | {item.location}</Text>
+      <Text style={{marginTop: 2}}>{item.dday} {item.dtime}</Text>
+      <Text>{item.currentpeople} / {item.sumpeople}</Text>
+      <Text>{item.memo}</Text>
+    </View>
   );
 
   let openImagePickerAsync = async () => {
@@ -129,22 +160,8 @@ const LoginOk = ({navigation}) => {
       console.log('error: ', error);
     }
     console.log('Done.')
-    navigation.goBack();
+    navigation.navigate('로그인');
   }
-
-  const kwon = async() => {
-    try {
-        const value = await AsyncStorage.getAllKeys();
-        const value2 = await AsyncStorage.getItem('user');
-        if(value !== null) {
-          // value previously stored
-        }
-        console.log(value);
-        console.log(value2);
-      } catch(e) {
-        // error reading value
-      }
-}
 
   return (
     <View style={a.container}>
@@ -161,15 +178,18 @@ const LoginOk = ({navigation}) => {
           <View style={a.optionbox}>
             <View style={a.option}><Text style={a.content}><Icon name='diamond' size={18}></Icon> 포인트</Text></View>
             <View style={a.option}><Text style={a.content}><Icon name='gift' size={18}></Icon> 쿠폰함</Text></View>
-            <View style={a.option}><Text style={a.content}><Icon name='edit' size={18}></Icon> 나의 글</Text></View>
+            <TouchableOpacity style={a.option} onPress={logout}><Text style={a.content}><Icon2 name='logout' size={18} style={{paddingTop: 4}}></Icon2> 로그아웃</Text></TouchableOpacity>
           </View>
         </View>
         <View style={a.subcontainer2}>
           <View style={a.header}><Text style={{fontSize: 20}}>나의 예약</Text></View>
-          <FlatList
-            data={DATA}
+          {info.length !== 0 ? (<FlatList
+            data={info}
             renderItem={renderItem}
-            keyExtractor={(item) => item.id} />
+            keyExtractor={(item) => item.id}/>) : (<View style={a.container2}>
+              <TouchableOpacity><Icon name='plus-circle' size={40} style={{color: 'lightgrey'}}></Icon></TouchableOpacity>
+              <Text style={{marginTop: 10}}>예약이 없습니다.</Text>
+              </View>)}
         </View>
         {/* <TouchableOpacity onPress={logout}>
           <Text>로그아웃</Text>
@@ -178,7 +198,6 @@ const LoginOk = ({navigation}) => {
           <Text>Asyncstorage 확인</Text>
         </TouchableOpacity> */}
       </ImageBackground>
-    
    </View>
   )
 }

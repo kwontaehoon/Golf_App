@@ -33,7 +33,7 @@ const a = StyleSheet.create({
     zIndex: 100,
   },
   left:{
-    borderWidth: 2,
+    borderRightWidth: 1,
     borderColor: 'black',
     flex: 1,
     alignItems: 'center',
@@ -54,7 +54,6 @@ const a = StyleSheet.create({
     padding: 3,
   },
   right:{
-    borderWidth: 1,
     borderColor: 'black',
     flex: 3,
     flexDirection: 'row',

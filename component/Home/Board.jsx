@@ -1,31 +1,38 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Scrollview } from 'react-native'
-import { getFirestore, collection, getDocs, docSnap, setDoc, doc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, docSnap, setDoc, doc, updateDoc } from 'firebase/firestore';
 import firebaseConfig from '../../firebase'
 import moment from "moment"
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 const a = StyleSheet.create({
     container:{
 
     },
     header:{
-        height: 50,
-        alignItems: 'flex-end',
+        height: 40,
+        flexDirection: 'row',
+    },
+    total:{
+        width: '50%',
         justifyContent: 'center',
-        marginRight: 5,
+        paddingLeft: 5,
     },
     write:{
-        padding: 10,
+        width: '50%',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        paddingRight: 10,
     },
     box:{
-        height: '82.5%',
-        borderWidth: 1,
-        borderColor: 'black',
+        height: '83.7%',
+        borderTopWidth: 1,
+        padding: 5,
     },
     subbox:{
-        borderWidth: 1,
-        borderColor: 'black',
+        borderBottomWidth: 1,
+        borderColor: 'grey',
         height: 70,
         padding: 15,
         justifyContent: 'center',
@@ -98,6 +105,14 @@ const Board = ({navigation, route}) => {
         }else navigation.navigate('글쓰기');
         
     }
+
+    const update = async() => {
+        await updateDoc(washingtonRef, {
+            currentpeople: reservation2.currentpeople + count
+          });
+        alert('업데이트 완료');
+        setScroll(!scroll);
+    }
    
     const List1 = () => {
         let arr = [];
@@ -107,7 +122,7 @@ const Board = ({navigation, route}) => {
                 <Text>{x.title}</Text>
                 <View>
                     <Text style={{marginRight: 20}}>{x.writer}</Text>
-                    <Text>{x.date} | 조회수</Text>
+                    <Text>{x.date} | <Icon name='eye'/> 2</Text>
                 </View>
             </View>
             )
@@ -119,6 +134,7 @@ const Board = ({navigation, route}) => {
   return (
     <View style={a.container}>
         <View style={a.header}>
+            <View style={a.total}><Text>Total 1/{info.length}</Text></View>
             <TouchableOpacity style={a.write} onPress={write}>
                 <Text style={{fontWeight: 'bold'}}>글 쓰기</Text>
             </TouchableOpacity>

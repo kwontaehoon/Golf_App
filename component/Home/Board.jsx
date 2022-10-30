@@ -29,13 +29,18 @@ const a = StyleSheet.create({
         height: '83.7%',
         borderTopWidth: 1,
         padding: 5,
+        backgroundColor: 'white',
     },
     subbox:{
-        borderBottomWidth: 1,
+        borderRadius: 10,
+        borderWidth: 1,
         borderColor: 'grey',
         height: 70,
         padding: 15,
         justifyContent: 'center',
+        marginBottom: 10,
+        marginTop: 10,
+        backgroundColor: '#ddd',
     },
     box2:{
         borderWidth: 1,
@@ -66,6 +71,7 @@ const Board = ({navigation, route}) => {
 
     const [info, setInfo] = useState([]); // 게시판 데이터
     console.log('Board info: ', info);
+    const [refresh, setRefresh] = useState();
 
     useEffect(()=>{
         board_insert();
@@ -83,6 +89,7 @@ const Board = ({navigation, route}) => {
             content: route.params[1],
             date: moment().format("YYYY.MM.DD HH:mm"),
             writer: user,
+            lookup: 0,
         });
     }
 
@@ -106,25 +113,27 @@ const Board = ({navigation, route}) => {
         
     }
 
-    const update = async() => {
+    const update = async(e, i) => {
+        let washingtonRef = doc(db, "board", String(i+1));
+
         await updateDoc(washingtonRef, {
-            currentpeople: reservation2.currentpeople + count
+            lookup: e + 1,
           });
         alert('업데이트 완료');
-        setScroll(!scroll);
+        setRefresh(1);
     }
    
     const List1 = () => {
         let arr = [];
         info.reverse().map((x, index) =>{
             arr.push(
-            <View style={a.subbox} key={index}>
+            <TouchableOpacity style={a.subbox} key={index} onPress={()=>update(x.lookup, index)}>
                 <Text>{x.title}</Text>
                 <View>
                     <Text style={{marginRight: 20}}>{x.writer}</Text>
-                    <Text>{x.date} | <Icon name='eye'/> 2</Text>
+                    <Text>{x.date} | <Icon name='eye'/> {x.lookup}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
             )
             })
         return arr;

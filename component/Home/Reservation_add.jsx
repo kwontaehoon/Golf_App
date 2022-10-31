@@ -108,6 +108,7 @@ const Reservation_add = ({scroll2, setScroll2}) => {
     const [show, setShow] = useState(false); // 날짜 선택시 display
     const [info, setInfo] = useState([]); // 전체 골프장
 
+
     useEffect(() => {
         Animated.timing(animation, {
           toValue: scroll2 ? 0 : -1000,
@@ -115,8 +116,10 @@ const Reservation_add = ({scroll2, setScroll2}) => {
           // 네이티브 레벨에서 진행하게 하는 옵션
         }).start();
         let arr = [];
+        let arr2 = [];
         number.filter((x, index)=>{
             arr.push(x.course_name);
+            arr2.push(x.address01);
           })
           setInfo(arr);
       }, [scroll2]);
@@ -169,9 +172,9 @@ const Reservation_add = ({scroll2, setScroll2}) => {
       setScroll2(!scroll2);
     }
 
-    const select = (e) => {
-        console.log(e);
-        // setLocation(e.location);
+    const select = (e, index) => {
+        const arr = number[index].address01;
+        setLocation(arr);
     }
     const select2 = (e) => {
         const date = new Date(e.nativeEvent.timestamp);
@@ -195,7 +198,7 @@ const Reservation_add = ({scroll2, setScroll2}) => {
           data={info}
           // defaultValueByIndex={1}
           // defaultValue={'England'}
-          onSelect={()=>select(info)}
+          onSelect={(e, i)=>select(e, i)}
           defaultButtonText={'골프장 선택'}
           buttonTextAfterSelection={(selectedItem, index) => {
             return selectedItem;
@@ -234,7 +237,7 @@ const Reservation_add = ({scroll2, setScroll2}) => {
                     <Text>{selectDate}</Text>
                 </View>
                 <TouchableOpacity style={{ backgroundColor: '#ddd', padding: 6, borderRadius: 4, borderWidth: 1, }}
-                onPress={()=>setShow(!show)}>
+                onPress={()=>setScroll(!scroll)}>
                 <Text style={{fontWeight: 'bold'}}>날짜선택</Text>
                 </TouchableOpacity>
             </View>

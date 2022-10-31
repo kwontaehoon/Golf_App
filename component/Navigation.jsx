@@ -4,6 +4,7 @@ import { NavigationContainer, TabActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon2 from 'react-native-vector-icons/Entypo'
 import Home from '../component/Home/Home_Page'
 import HomeMain from '../component/Home/Main'
 import Store from '../component/Home/Store'
@@ -65,9 +66,16 @@ const Navigation = () => {
                </Stack.Navigator>   
             )}
           </Tab.Screen>
-        <Tab.Screen name="Search" component={Search} options={{tabBarIcon: () => (<Icon name='search' size={23}></Icon>)}}/>
-
-
+        <Tab.Screen name="Chat" options={{tabBarIcon: () => (<Icon2 name='chat' size={23}/>), tabBarBadge: 3, tabBarHideOnKeyboard: true}}>
+        {()=>(
+               <Stack.Navigator>
+                    <Stack.Screen 
+                        name="채팅방"
+                        component={Search}
+                      />
+               </Stack.Navigator>   
+          )}
+          </Tab.Screen>
         <Tab.Screen name="MyPage" options={{tabBarIcon: () => (<Icon name='user' size={23}/>)}}>
         {()=>(
                <Stack.Navigator >

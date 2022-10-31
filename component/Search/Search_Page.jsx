@@ -1,68 +1,90 @@
-import React, {useState, useEffect} from 'react'
-import {View, Text, StyleSheet, Image, Pressable, TouchableOpacity} from 'react-native'
-import * as ImagePicker from 'expo-image-picker';
+import React, { useState, useEffect } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native'
+import { getDatabase, ref, onValue, set } from 'firebase/database';
+import { initializeFirestore } from "firebase/firestore";
+import { getFirestore, collection, getDocs, setDoc, doc, getDoc } from 'firebase/firestore';
+import firebaseConfig from '../../firebase'
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 const a = StyleSheet.create({
-  container: {
+  container:{
+
+  },
+  main:{
+    height: '88.5%',
     borderWidth: 1,
-    borderColor: 'black',
-    marginTop: 50,
-    height: 500,
-    justifyContent: 'center',
+  },
+  footer:{
+    borderWidth: 1,
+    height: 52,
+    flexDirection: 'row',
+  },
+  plus:{
+    borderWidth: 1,
+    width: '14%',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  circle:{
+  text:{
     borderWidth: 1,
-    borderColor: 'black',
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: '72%',
+    padding: 2,
   },
-  button:{
-    width: 100,
-    height: 30,
+  send:{
+    width: '14%',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'black',
-  },
-  thumbnail: {
-    width: 300,
-    height: 300,
-    resizeMode: "contain"
+    backgroundColor: 'green',
   }
-});
+})
+
 const Search_Page = () => {
 
-  const [selectedImage, setSelectedImage] = useState(null);
+  const app = firebaseConfig;
+  const db = getFirestore(app);
 
-  let openImagePickerAsync = async () => {
-    let pickerResult = await ImagePicker.launchImageLibraryAsync();
-    if (pickerResult.cancelled === true) {
-      return;
-    }
-    setSelectedImage({ localUri: pickerResult.uri });
-    uploadBytes(storageRef, selectedImage.localUri).then((snapshot) => {
-      console.log('Uploaded a blob or file!');
+  useEffect(()=>{
+    const db = getDatabase();
+    const dbRef = ref(getDatabase());
+    console.log(db);
+    console.log(dbRef);
+    const starCountRef = ref(db);
+    onValue(starCountRef, (snapshot) => {
+        const data = snapshot.val();
+        console.log('data: ', data);
+        setInfo(data);
     });
-  };
+  }, [])
+  
+  const [info, setInfo] = useState([]);
+  console.log('info: ', info);
+  console.log('info 길이: ', info.length);
 
-  if (selectedImage !== null) {
-    return (
-      <View style={a.container}>
-        <Image
-          source={{ uri: selectedImage.localUri }}
-          style={a.thumbnail}
-        />
-      </View>
-    );
+  const [text, setText] = useState('');
+  console.log('text: ', text);
+
+  const write = () => {
+    console.log('실시간 데이터베이스 쓰기');
+    const db = getDatabase();
+    set(ref(db, '/' + info.length), {
+      username: '태훈',
+      message: text,
+    });
   }
 
   return (
     <View style={a.container}>
-      <TouchableOpacity style={a.button} onPress={openImagePickerAsync}>
-        <Text>버튼</Text>
-      </TouchableOpacity>
+      <View style={a.main}>
+
+      </View>
+        <View style={a.footer}>
+          <View style={a.plus}><Text style={{fontSize: 30}}>+</Text></View>
+          <TextInput style={a.text} onChangeText={(e)=>setText(e)}></TextInput>
+          <TouchableOpacity style={a.send} onPress={write}><Icon name='send' size={18}></Icon></TouchableOpacity>
+        </View>
     </View>
-  );
+  )
 }
 
 export default Search_Page

@@ -44,7 +44,6 @@ const Store = () => {
     },
     image:{
       flex: 1,
-      
     }
   })
 

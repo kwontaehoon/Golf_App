@@ -11,6 +11,7 @@ import Write from '../component/Home/Write'
 import Reservation from '../component/Home/Reservation'
 import Album from '../component/Home/Album'
 import Board from '../component/Home/Board'
+import Board2 from '../component/Home/Board2'
 import Search from '../component/Search/Search_Page'
 import MyPage from '../component/MyPage/MyPage_Page'
 import MyPageMain from '../component/MyPage/Main'
@@ -53,6 +54,11 @@ const Navigation = () => {
                         component={Board}
                       />
                     <Stack.Screen 
+                        name="상세게시판"
+                        component={Board2}
+                        options={{headerShown: false}}
+                      />
+                    <Stack.Screen 
                         name="글쓰기"
                         component={Write}
                       />
@@ -76,6 +82,7 @@ const Navigation = () => {
                       <Stack.Screen 
                         name="마이페이지"
                         component={LoginOk}
+                        options={{headerShown: false}}
                       />
                </Stack.Navigator>   
           )}

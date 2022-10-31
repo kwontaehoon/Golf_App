@@ -43,23 +43,23 @@ const a = StyleSheet.create({
         backgroundColor: '#ddd',
     },
     box2:{
-        borderWidth: 1,
-        borderColor: 'black',
         height: '7%',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     button:{
         borderWidth: 1,
-        borderColor: 'black',
         width: 30,
         height: 30,
         margin: 10,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'black',
     }
 })
+
 const Board = ({navigation, route}) => {
 
     console.log('route: ', route.params);
@@ -72,6 +72,7 @@ const Board = ({navigation, route}) => {
     const [info, setInfo] = useState([]); // 게시판 데이터
     console.log('Board info: ', info);
     const [refresh, setRefresh] = useState();
+    console.log('refresh: ', refresh);
 
     useEffect(()=>{
         board_insert();
@@ -110,35 +111,32 @@ const Board = ({navigation, route}) => {
         if(value === null){
             alert('로그인 후 이용해주세요.');
         }else navigation.navigate('글쓰기');
-        
     }
 
     const update = async(e, i) => {
         let washingtonRef = doc(db, "board", String(i+1));
 
         await updateDoc(washingtonRef, {
-            lookup: e + 1,
+            lookup: e.lookup + 1,
           });
-        alert('업데이트 완료');
-        setRefresh(1);
+        navigation.navigate('상세게시판', {e});
     }
    
     const List1 = () => {
         let arr = [];
         info.reverse().map((x, index) =>{
             arr.push(
-            <TouchableOpacity style={a.subbox} key={index} onPress={()=>update(x.lookup, index)}>
+            <TouchableOpacity style={a.subbox} key={index} onPress={()=>update(x, index)}>
                 <Text>{x.title}</Text>
                 <View>
                     <Text style={{marginRight: 20}}>{x.writer}</Text>
-                    <Text>{x.date} | <Icon name='eye'/> {x.lookup}</Text>
+                    <Text>{x.date}  <Icon name='eye'/> {x.lookup}</Text>
                 </View>
             </TouchableOpacity>
             )
             })
         return arr;
     }
-
     
   return (
     <View style={a.container}>
@@ -153,13 +151,7 @@ const Board = ({navigation, route}) => {
         </View>
         <View style={a.box2}>
             <TouchableOpacity style={a.button}>
-                <Text>1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={a.button}>
-                <Text>2</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={a.button}>
-                <Text>3</Text>
+                <Text style={{color: 'white'}}>1</Text>
             </TouchableOpacity>
         </View>
     </View>

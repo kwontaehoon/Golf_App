@@ -10,6 +10,7 @@ import firebaseConfig from '../../firebase'
 
 const a = StyleSheet.create({
   container:{
+    marginTop: 40,
   },
   image:{
     width: '100%',

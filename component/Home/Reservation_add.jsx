@@ -100,8 +100,6 @@ const Reservation_add = ({scroll2, setScroll2}) => {
     const [scroll, setScroll] = useState(false); // 달력 display
     const [selectDate, setSelectdate] = useState(''); // 날짜 선택 결과값
     const [selectTime, setSelectTime] = useState(); // 시간 선택 결과값
-    console.log(selectTime);
-    console.log(selectTime === undefined);
     const [title, setTitle] = useState('');
     const [location, setLocation] = useState('');
     const [price, setPrice] = useState();
@@ -172,10 +170,8 @@ const Reservation_add = ({scroll2, setScroll2}) => {
     }
 
     const select = (e) => {
-        if(e !== null){
-            setTitle(e.title);
-            setLocation(e.location);
-        }
+        console.log(e);
+        // setLocation(e.location);
     }
     const select2 = (e) => {
         const date = new Date(e.nativeEvent.timestamp);
@@ -183,9 +179,6 @@ const Reservation_add = ({scroll2, setScroll2}) => {
         setShow(!show);
         setSelectTime(`${date.getHours()}시 ${date.getMinutes()}분`);
     }
-
-    const dataSet = ['레익스골프장'];
-
 
   return (
     <Animated.View style={[a.container, {display: scroll2 ? 'flex' : 'none'}]}>
@@ -202,7 +195,7 @@ const Reservation_add = ({scroll2, setScroll2}) => {
           data={info}
           // defaultValueByIndex={1}
           // defaultValue={'England'}
-          onSelect={select}
+          onSelect={()=>select(info)}
           defaultButtonText={'골프장 선택'}
           buttonTextAfterSelection={(selectedItem, index) => {
             return selectedItem;

@@ -104,7 +104,7 @@ const LoginOk = ({navigation}) => {
     AsyncStorage.getItem('user', (err, result) => { //user_id에 담긴 아이디 불러오기
       setEmail(result);
     });
-  })
+  }, []);
 
   useEffect(()=>{
     reservation();

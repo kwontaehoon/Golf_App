@@ -4,4 +4,4 @@ const arr2= [null]
 
 const arr3 = [undefined];
 
-console.log(arr.length, arr2.length, arr3.length);
+console.log(arr.length, arr2.length, arr3.length)

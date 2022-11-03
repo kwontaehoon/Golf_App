@@ -173,7 +173,9 @@ const Reservation_add = ({scroll2, setScroll2}) => {
     }
 
     const select = (e, index) => {
+        console.log(e);
         const arr = number[index].address01;
+        setTitle(e);
         setLocation(arr);
     }
     const select2 = (e) => {

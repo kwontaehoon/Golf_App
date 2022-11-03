@@ -65,8 +65,6 @@ const Reservation2 = ({scroll, setScroll, reservation2}) => {
     const [count, setCount] = useState(1); // 인원 수
     const [gender, setGender] = useState([false, false]); // 성별 버튼
 
-    console.log(reservation2);
-
     const app = firebaseConfig;
     const db = getFirestore(app); /////////////////////////////////////////////////////////////////
     const washingtonRef = doc(db, "reservation", String(reservation2.id));

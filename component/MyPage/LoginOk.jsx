@@ -10,7 +10,6 @@ import firebaseConfig from '../../firebase'
 
 const a = StyleSheet.create({
   container:{
-    marginTop: 40,
   },
   image:{
     width: '100%',
@@ -192,12 +191,6 @@ const reservation = async() => {
               <Text style={{marginTop: 10}}>예약이 없습니다.</Text>
               </View>)}
         </View>
-        {/* <TouchableOpacity onPress={logout}>
-          <Text>로그아웃</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={kwon}>
-          <Text>Asyncstorage 확인</Text>
-        </TouchableOpacity> */}
       </ImageBackground>
    </View>
   )

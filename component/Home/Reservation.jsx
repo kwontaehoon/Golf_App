@@ -46,8 +46,6 @@ const a = StyleSheet.create({
     justifyContent: 'center',
   },
   box1:{
-    borderWidth: 1,
-    borderColor: 'black',
     height: '10%',
     justifyContent: 'space-around',
     alignItems: 'center',

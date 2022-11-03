@@ -14,7 +14,6 @@ const a = StyleSheet.create({
   },
   main:{
     height: '88.5%',
-    borderWidth: 1,
   },
   box:{
     padding: 5,
@@ -113,12 +112,9 @@ const Search_Page = () => {
   useEffect(()=>{
     const db = getDatabase();
     const dbRef = ref(getDatabase());
-    console.log(db);
-    console.log(dbRef);
     const starCountRef = ref(db);
     onValue(starCountRef, (snapshot) => {
         const data = snapshot.val();
-        console.log('data: ', data);
         setInfo(data);
     });
 
@@ -128,13 +124,8 @@ const Search_Page = () => {
   }, [])
   
   const [info, setInfo] = useState([]);
-  console.log('info: ', info);
-
   const [text, setText] = useState('');
-  console.log('text: ', text);
-
   const [user, setUser] = useState();
-  console.log('user: ', user);
 
   const write = () => {
     console.log('실시간 데이터베이스 쓰기');
@@ -143,7 +134,6 @@ const Search_Page = () => {
     if(info === null){
       count === 0
     }else count = info.length;
-    console.log('count: ', count);
     set(ref(db, '/' + count), {
       username: user,
       message: text,
@@ -165,9 +155,7 @@ const Search_Page = () => {
       </View>
       )
     }else{
-      console.log('taehoon: ', taehoon);
       if(taehoon !== item.clock){
-        console.log('첫번째');
         taehoon = item.clock;
         return (
     <View style={a.box}>

@@ -114,6 +114,8 @@ const Board = ({navigation, route}) => {
     }
 
     const update = async(e, i) => {
+        console.log('e: ', e.lookup);
+        console.log('i: ', i);
         let washingtonRef = doc(db, "board", String(i+1));
 
         await updateDoc(washingtonRef, {
@@ -124,7 +126,7 @@ const Board = ({navigation, route}) => {
    
     const List1 = () => {
         let arr = [];
-        info.reverse().map((x, index) =>{
+        info.map((x, index) =>{
             arr.push(
             <TouchableOpacity style={a.subbox} key={index} onPress={()=>update(x, index)}>
                 <Text>{x.title}</Text>

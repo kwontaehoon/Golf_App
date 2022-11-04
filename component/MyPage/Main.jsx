@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, TextInput, Switch, Button } from 'react-native'
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, getRedirectResult, FacebookAuthProvider } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, getRedirectResult, FacebookAuthProvider, signInWithPopup } from "firebase/auth";
 import authentication from '../../firebase'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginOk from './LoginOk';
@@ -59,7 +59,7 @@ const Main = ({navigation}) => {
     const [isEnabled, setIsEnabled] = useState(false); // 자동로그인 스위치
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
-    const auth = getAuth();
+    const auth = getAuth(authentication);
     const provider = new GoogleAuthProvider();
     const provider2 = new FacebookAuthProvider();
 
@@ -112,6 +112,23 @@ const Main = ({navigation}) => {
         });
     }
 
+    const facebook_login = async() => {
+        await signInWithPopup(auth, email, password)
+        .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+        AsyncStorage.setItem('user', email);
+        navigation.navigate('마이페이지');
+        })
+        .catch((error) => {
+            console.log('error');
+            alert('아이디와 비밀번호를 확인해주세요.');
+            console.log();
+            const errorCode = error.code;
+            const errorMessage = error.message;
+        });
+    }
+
   return userinfo === null ? (
     <View style={a.container}>
     <View style={a.header}>
@@ -136,7 +153,7 @@ const Main = ({navigation}) => {
         <Text style={a.text}>google 로그인</Text>
     </TouchableOpacity>
 
-    <TouchableOpacity style={[a.bar, {backgroundColor: 'darkblue'}]}>
+    <TouchableOpacity style={[a.bar, {backgroundColor: 'darkblue'}]} onPress={facebook_login}>
         <Text style={[a.text, {color: 'white'}]}>FaceBook 로그인</Text>
     </TouchableOpacity>
     
